@@ -1,0 +1,3568 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+
+<meta name="theme-color" content="#0284c7">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<link rel="manifest" href="manifest.json">
+
+<title>A.E.S.T. Taounate</title>
+
+<style>
+:root{
+    --blue:#0284c7;
+    --blue-dark:#0369a1;
+    --orange:#f97316;
+    --orange-dark:#ea580c;
+    --green:#059669;
+    --red:#e11d48;
+    --amber:#d97706;
+
+    --bg:#f1f5f9;
+    --card:#ffffff;
+    --text:#1e293b;
+    --muted:#64748b;
+    --border:#e2e8f0;
+}
+
+*{
+    box-sizing:border-box;
+}
+
+html,
+body{
+    margin:0;
+    padding:0;
+    min-height:100%;
+}
+
+body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:env(safe-area-inset-bottom);
+}
+
+button,
+input,
+select{
+    font:inherit;
+}
+
+button{
+    cursor:pointer;
+}
+
+.hidden{
+    display:none!important;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.header{
+    position:sticky;
+    top:0;
+    z-index:50;
+    color:#fff;
+
+    background:
+        linear-gradient(
+            110deg,
+            var(--blue),
+            var(--blue-dark),
+            var(--orange)
+        );
+
+    box-shadow:0 3px 14px rgba(0,0,0,.16);
+}
+
+.header-inner{
+    max-width:1200px;
+    margin:auto;
+
+    padding:
+        10px
+        max(16px,env(safe-area-inset-left))
+        10px
+        max(16px,env(safe-area-inset-right));
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    min-width:0;
+}
+
+.logo{
+    width:42px;
+    height:42px;
+
+    flex:none;
+
+    display:grid;
+    place-items:center;
+
+    border-radius:50%;
+
+    background:rgba(255,255,255,.12);
+    border:2px solid #fb923c;
+
+    font-size:21px;
+    font-weight:900;
+}
+
+.brand-title{
+    font-size:17px;
+    font-weight:800;
+    white-space:nowrap;
+}
+
+.brand-subtitle{
+    margin-top:2px;
+
+    font-size:11px;
+    color:#e0f2fe;
+}
+
+.header-actions{
+    display:flex;
+    align-items:center;
+    gap:7px;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.btn{
+    border:0;
+    border-radius:11px;
+
+    padding:9px 12px;
+
+    font-size:12px;
+    font-weight:700;
+
+    transition:
+        transform .12s,
+        opacity .12s,
+        background .12s;
+}
+
+.btn:active{
+    transform:scale(.97);
+}
+
+.btn-blue{
+    background:var(--blue);
+    color:#fff;
+}
+
+.btn-blue:hover{
+    background:var(--blue-dark);
+}
+
+.btn-orange{
+    background:var(--orange);
+    color:#fff;
+}
+
+.btn-orange:hover{
+    background:var(--orange-dark);
+}
+
+.btn-light{
+    color:#fff;
+    background:rgba(255,255,255,.20);
+    border:1px solid rgba(255,255,255,.30);
+}
+
+.btn-light:hover{
+    background:rgba(255,255,255,.30);
+}
+
+.btn-gray{
+    background:#f1f5f9;
+    color:#475569;
+}
+
+.btn-green{
+    background:#10b981;
+    color:#fff;
+}
+
+.btn-danger{
+    background:#fff1f2;
+    color:#be123c;
+}
+
+/* =========================
+   NAVIGATION
+========================= */
+
+.nav{
+    position:sticky;
+    top:62px;
+    z-index:40;
+
+    background:#fff;
+
+    border-bottom:1px solid var(--border);
+    box-shadow:0 1px 5px rgba(0,0,0,.05);
+}
+
+.nav-inner{
+    max-width:1200px;
+    margin:auto;
+
+    display:flex;
+    overflow-x:auto;
+
+    scrollbar-width:none;
+}
+
+.nav-inner::-webkit-scrollbar{
+    display:none;
+}
+
+.tab{
+    border:0;
+    border-bottom:3px solid transparent;
+
+    background:none;
+
+    padding:13px 16px;
+
+    color:#64748b;
+
+    font-size:12px;
+    font-weight:700;
+
+    white-space:nowrap;
+}
+
+.tab.active{
+    color:var(--blue);
+    border-bottom-color:var(--blue);
+}
+
+/* =========================
+   MAIN
+========================= */
+
+.main{
+    width:100%;
+    max-width:1200px;
+
+    margin:auto;
+
+    padding:22px 16px;
+}
+
+/* =========================
+   DASHBOARD
+========================= */
+
+.stats{
+    display:grid;
+
+    grid-template-columns:
+        repeat(4,minmax(0,1fr));
+
+    gap:14px;
+}
+
+.card{
+    background:var(--card);
+
+    border:1px solid var(--border);
+    border-radius:18px;
+
+    box-shadow:
+        0 2px 8px rgba(0,0,0,.045);
+}
+
+.stat-card{
+    padding:15px;
+
+    display:flex;
+    align-items:center;
+    gap:11px;
+}
+
+.stat-icon{
+    width:44px;
+    height:44px;
+
+    flex:none;
+
+    display:grid;
+    place-items:center;
+
+    border-radius:12px;
+
+    font-size:20px;
+}
+
+.icon-blue{
+    color:#0284c7;
+    background:#e0f2fe;
+}
+
+.icon-green{
+    color:#059669;
+    background:#d1fae5;
+}
+
+.icon-amber{
+    color:#d97706;
+    background:#fef3c7;
+}
+
+.icon-orange{
+    color:#ea580c;
+    background:#ffedd5;
+}
+
+.stat-label{
+    color:var(--muted);
+
+    font-size:11px;
+    font-weight:700;
+}
+
+.stat-value{
+    margin-top:2px;
+
+    font-size:21px;
+    font-weight:900;
+}
+
+/* =========================
+   DASHBOARD BANNER
+========================= */
+
+.banner{
+    margin-top:14px;
+
+    padding:20px;
+
+    border-radius:18px;
+
+    color:#fff;
+
+    background:
+        linear-gradient(
+            110deg,
+            var(--blue),
+            var(--blue-dark)
+        );
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+}
+
+.banner-title{
+    font-size:18px;
+    font-weight:800;
+}
+
+.banner-description{
+    margin-top:5px;
+
+    color:#e0f2fe;
+
+    font-size:12px;
+}
+
+.banner-actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+}
+
+/* =========================
+   TOOLBAR
+========================= */
+
+.toolbar{
+    margin-bottom:14px;
+
+    padding:13px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.search{
+    flex:1;
+    max-width:440px;
+}
+
+.input,
+.select{
+    width:100%;
+
+    padding:9px 11px;
+
+    border:1px solid var(--border);
+    border-radius:11px;
+
+    background:#f8fafc;
+    color:var(--text);
+
+    outline:none;
+
+    font-size:13px;
+}
+
+.input:focus,
+.select:focus{
+    border-color:var(--blue);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(2,132,199,.12);
+}
+
+/* =========================
+   TABLE
+========================= */
+
+.table-container{
+    overflow:auto;
+}
+
+.table{
+    width:100%;
+    min-width:820px;
+
+    border-collapse:collapse;
+
+    font-size:12px;
+}
+
+.table th{
+    padding:12px;
+
+    background:#f8fafc;
+
+    color:#475569;
+
+    border-bottom:1px solid var(--border);
+
+    text-align:start;
+
+    font-size:10px;
+    font-weight:800;
+
+    text-transform:uppercase;
+}
+
+.table td{
+    padding:11px 12px;
+
+    border-bottom:1px solid #f1f5f9;
+}
+
+.table tbody tr:hover td{
+    background:#f8fafc;
+}
+
+/* =========================
+   BADGES
+========================= */
+
+.badge{
+    display:inline-block;
+
+    padding:4px 8px;
+
+    border-radius:8px;
+
+    font-size:10px;
+    font-weight:800;
+}
+
+.badge-green{
+    color:#065f46;
+    background:#d1fae5;
+}
+
+.badge-gray{
+    color:#64748b;
+    background:#f1f5f9;
+}
+
+.badge-orange{
+    color:#9a3412;
+    background:#ffedd5;
+}
+
+/* =========================
+   ACTION BUTTON
+========================= */
+
+.icon-button{
+    border:0;
+
+    padding:6px;
+
+    border-radius:8px;
+
+    background:transparent;
+
+    font-size:16px;
+}
+
+.icon-button:hover{
+    background:#f1f5f9;
+}
+
+/* =========================
+   FINANCES
+========================= */
+
+.finance-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,minmax(0,1fr));
+
+    gap:14px;
+}
+
+.finance-card{
+    padding:18px;
+}
+
+.finance-box{
+    margin-top:11px;
+
+    padding:15px;
+
+    border-radius:12px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.finance-green{
+    background:#ecfdf5;
+    border:1px solid #a7f3d0;
+}
+
+.finance-orange{
+    background:#fff7ed;
+    border:1px solid #fed7aa;
+}
+
+/* =========================
+   MODAL
+========================= */
+
+.modal{
+    position:fixed;
+    inset:0;
+
+    z-index:100;
+
+    padding:14px;
+
+    background:rgba(15,23,42,.60);
+
+    backdrop-filter:blur(4px);
+
+    display:grid;
+    place-items:center;
+}
+
+.modal-box{
+    width:min(560px,100%);
+    max-height:90vh;
+
+    overflow:auto;
+
+    background:#fff;
+
+    border-radius:22px;
+
+    box-shadow:
+        0 20px 60px rgba(0,0,0,.30);
+}
+
+.modal-header{
+    padding:14px 17px;
+
+    color:#fff;
+
+    background:
+        linear-gradient(
+            110deg,
+            var(--blue),
+            var(--orange)
+        );
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.modal-title{
+    font-size:15px;
+    font-weight:800;
+}
+
+.modal-body{
+    padding:17px;
+}
+
+.form-grid{
+    display:grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap:12px;
+}
+
+.field{
+    margin-bottom:12px;
+}
+
+.field label{
+    display:block;
+
+    margin-bottom:5px;
+
+    color:#475569;
+
+    font-size:11px;
+    font-weight:800;
+}
+
+.modal-footer{
+    margin-top:15px;
+
+    display:flex;
+    justify-content:flex-end;
+    gap:8px;
+}
+
+/* =========================
+   EMPTY
+========================= */
+
+.empty{
+    padding:35px;
+
+    text-align:center;
+
+    color:var(--muted);
+}
+
+/* =========================
+   TOAST
+========================= */
+
+.toast{
+    position:fixed;
+
+    left:50%;
+    bottom:18px;
+
+    z-index:200;
+
+    transform:
+        translateX(-50%)
+        translateY(20px);
+
+    padding:10px 16px;
+
+    border-radius:12px;
+
+    color:#fff;
+    background:#0f172a;
+
+    font-size:12px;
+    font-weight:700;
+
+    opacity:0;
+
+    pointer-events:none;
+
+    transition:.25s;
+}
+
+.toast.show{
+    opacity:1;
+
+    transform:
+        translateX(-50%)
+        translateY(0);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:850px){
+
+    .stats{
+        grid-template-columns:
+            1fr 1fr;
+    }
+
+    .finance-grid{
+        grid-template-columns:1fr;
+    }
+
+    .banner{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .search{
+        max-width:none;
+    }
+}
+
+@media(max-width:520px){
+
+    .header-inner{
+        padding-left:10px;
+        padding-right:10px;
+    }
+
+    .brand-title{
+        font-size:14px;
+    }
+
+    .brand-subtitle{
+        font-size:9px;
+    }
+
+    .logo{
+        width:36px;
+        height:36px;
+    }
+
+    .main{
+        padding:14px 10px;
+    }
+
+    .stat-card{
+        padding:11px;
+        gap:7px;
+    }
+
+    .stat-icon{
+        width:36px;
+        height:36px;
+    }
+
+    .stat-value{
+        font-size:17px;
+    }
+
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .toolbar{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .banner-actions{
+        width:100%;
+    }
+
+    .banner-actions .btn,
+    .banner-actions label{
+        flex:1;
+        text-align:center;
+    }
+}
+
+/* =========================
+   RTL
+========================= */
+
+[dir="rtl"] .table th,
+[dir="rtl"] .table td{
+    text-align:right;
+}
+
+[dir="rtl"] .modal-footer{
+    justify-content:flex-start;
+}
+</style>
+</head>
+
+<body>
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header class="header">
+
+<div class="header-inner">
+
+<div class="brand">
+
+<div class="logo">
+★
+</div>
+
+<div>
+
+<div class="brand-title">
+A.E.S.T. Taounate
+</div>
+
+<div class="brand-subtitle"
+     id="headerSubtitle">
+Saison 2026-2027 • Mode Hors-Ligne
+</div>
+
+</div>
+
+</div>
+
+<div class="header-actions">
+
+<button
+    class="btn btn-light"
+    onclick="toggleLanguage()"
+    id="languageButton">
+العربية / FR
+</button>
+
+<button
+    class="btn btn-orange"
+    onclick="openAddModal()">
+
+＋ <span id="addButtonText">
+Nouveau
+</span>
+
+</button>
+
+</div>
+
+</div>
+
+</header>
+
+
+<!-- =====================================================
+     NAVIGATION
+===================================================== -->
+
+<nav class="nav">
+
+<div class="nav-inner">
+
+<button
+    class="tab active"
+    data-tab="dashboard"
+    onclick="switchTab('dashboard')">
+
+▣
+<span id="tabDashboard">
+Tableau de bord
+</span>
+
+</button>
+
+
+<button
+    class="tab"
+    data-tab="players"
+    onclick="switchTab('players')">
+
+♙
+<span id="tabPlayers">
+Effectif
+</span>
+
+</button>
+
+
+<button
+    class="tab"
+    data-tab="attendance"
+    onclick="switchTab('attendance')">
+
+✓
+<span id="tabAttendance">
+Présences
+</span>
+
+</button>
+
+
+<button
+    class="tab"
+    data-tab="finances"
+    onclick="switchTab('finances')">
+
+◆
+<span id="tabFinances">
+Finances & Packs
+</span>
+
+</button>
+
+</div>
+
+</nav>
+
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
+
+<main class="main">
+
+
+<!-- =====================================================
+     DASHBOARD
+===================================================== -->
+
+<section
+    id="viewDashboard"
+    class="view">
+
+<div class="stats">
+
+
+<div class="card stat-card">
+
+<div class="stat-icon icon-blue">
+♙
+</div>
+
+<div>
+
+<div
+    class="stat-label"
+    id="labelTotalPlayers">
+Total Joueurs
+</div>
+
+<div
+    class="stat-value"
+    id="statTotalPlayers">
+0
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card stat-card">
+
+<div class="stat-icon icon-green">
+◆
+</div>
+
+<div>
+
+<div
+    class="stat-label"
+    id="labelTotalFees">
+Recettes (DH)
+</div>
+
+<div
+    class="stat-value"
+    id="statTotalFees">
+0 DH
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card stat-card">
+
+<div class="stat-icon icon-amber">
+□
+</div>
+
+<div>
+
+<div
+    class="stat-label"
+    id="labelTotalPacks">
+Packs Attribués
+</div>
+
+<div
+    class="stat-value"
+    id="statTotalPacks">
+0
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card stat-card">
+
+<div class="stat-icon icon-orange">
+★
+</div>
+
+<div>
+
+<div class="stat-label">
+Saison
+</div>
+
+<div
+    class="stat-value"
+    style="font-size:17px">
+2026-2027
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="banner">
+
+<div>
+
+<div
+    class="banner-title">
+Association des Étoiles Sportive Taounate
+</div>
+
+<div
+    class="banner-description"
+    id="dashboardDescription">
+
+Gestion 100% hors-ligne.
+Les données restent sur cet appareil.
+
+</div>
+
+</div>
+
+
+<div class="banner-actions">
+
+<button
+    class="btn btn-light"
+    onclick="exportData()">
+
+↓
+<span id="exportButtonText">
+Sauvegarder JSON
+</span>
+
+</button>
+
+
+<label
+    class="btn btn-orange">
+
+↑
+<span id="importButtonText">
+Restaurer
+</span>
+
+<input
+    id="importFile"
+    type="file"
+    accept=".json,application/json"
+    hidden>
+
+</label>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     PLAYERS
+===================================================== -->
+
+<section
+    id="viewPlayers"
+    class="view hidden">
+
+
+<div class="card toolbar">
+
+<input
+    id="searchInput"
+    class="input search"
+    type="search"
+    placeholder="Rechercher..."
+    oninput="renderPlayers()">
+
+
+<select
+    id="packFilter"
+    class="select"
+    style="max-width:220px"
+    onchange="renderPlayers()">
+
+<option value="">
+Tous les packs
+</option>
+
+<option value="yes">
+Pack bénéficiaire
+</option>
+
+<option value="no">
+Sans pack / autre
+</option>
+
+</select>
+
+</div>
+
+
+<div class="card table-container">
+
+<table class="table">
+
+<thead>
+
+<tr>
+
+<th>#</th>
+
+<th id="headerName">
+Nom & Prénom
+</th>
+
+<th id="headerDob">
+Date Naiss.
+</th>
+
+<th id="headerTutor">
+Tuteur
+</th>
+
+<th id="headerPhone">
+Téléphone
+</th>
+
+<th id="headerFees">
+Montant
+</th>
+
+<th id="headerPack">
+Pack / Taille
+</th>
+
+<th id="headerActions">
+Actions
+</th>
+
+</tr>
+
+</thead>
+
+<tbody id="playersTableBody">
+</tbody>
+
+</table>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     ATTENDANCE
+===================================================== -->
+
+<section
+    id="viewAttendance"
+    class="view hidden">
+
+
+<div class="card toolbar">
+
+<div>
+
+<h2
+    id="attendanceTitle"
+    style="font-size:15px">
+Feuille de présence
+</h2>
+
+<div
+    id="attendanceDescription"
+    class="stat-label">
+
+Sélectionnez la date puis marquez les présents.
+
+</div>
+
+</div>
+
+
+<input
+    id="attendanceDate"
+    type="date"
+    class="input"
+    style="max-width:180px"
+    onchange="renderAttendance()">
+
+</div>
+
+
+<div class="card table-container">
+
+<table
+    class="table"
+    style="min-width:500px">
+
+<thead>
+
+<tr>
+
+<th>
+#
+</th>
+
+<th>
+Joueur
+</th>
+
+<th style="text-align:center">
+Présence
+</th>
+
+</tr>
+
+</thead>
+
+<tbody id="attendanceTableBody">
+</tbody>
+
+</table>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     FINANCES
+===================================================== -->
+
+<section
+    id="viewFinances"
+    class="view hidden">
+
+
+<div class="finance-grid">
+
+
+<div class="card finance-card">
+
+<h3 style="font-size:14px">
+◆
+<span id="financeTitle">
+Suivi Global des Recettes
+</span>
+</h3>
+
+
+<div class="finance-box finance-green">
+
+<div>
+
+<div class="stat-label">
+Total perçu — Saison 2026-2027
+</div>
+
+<div
+    class="stat-value"
+    id="financeTotalFees">
+0 DH
+</div>
+
+</div>
+
+
+<b id="financePayers">
+0 payeurs
+</b>
+
+</div>
+
+</div>
+
+
+<div class="card finance-card">
+
+<h3 style="font-size:14px">
+□ Distribution des Packs
+</h3>
+
+
+<div class="finance-box finance-orange">
+
+<div>
+
+<div class="stat-label">
+Total Packs Distribués
+</div>
+
+<div
+    class="stat-value"
+    id="financeTotalPacks">
+0
+</div>
+
+</div>
+
+
+<b id="financePackRatio">
+0%
+</b>
+
+</div>
+
+</div>
+
+
+</div>
+
+</section>
+
+</main>
+
+
+<!-- =====================================================
+     PLAYER MODAL
+===================================================== -->
+
+<div
+    id="playerModal"
+    class="modal hidden">
+
+<div class="modal-box">
+
+
+<div class="modal-header">
+
+<div
+    class="modal-title"
+    id="modalTitle">
+Ajouter un joueur
+</div>
+
+<button
+    class="btn btn-light"
+    onclick="closeModal()">
+
+✕
+
+</button>
+
+</div>
+
+
+<form
+    id="playerForm"
+    class="modal-body"
+    onsubmit="savePlayer(event)">
+
+
+<input
+    id="playerId"
+    type="hidden">
+
+
+<div class="form-grid">
+
+
+<div class="field">
+
+<label id="labelFirstName">
+Prénom
+</label>
+
+<input
+    id="formFirstName"
+    class="input"
+    required>
+
+</div>
+
+
+<div class="field">
+
+<label id="labelLastName">
+Nom
+</label>
+
+<input
+    id="formLastName"
+    class="input"
+    required>
+
+</div>
+
+</div>
+
+
+<div class="form-grid">
+
+
+<div class="field">
+
+<label id="labelDob">
+Date de naissance
+</label>
+
+<input
+    id="formDob"
+    class="input"
+    placeholder="JJ/MM/AAAA">
+
+</div>
+
+
+<div class="field">
+
+<label id="labelFees">
+Montant (DH)
+</label>
+
+<input
+    id="formFees"
+    class="input"
+    inputmode="decimal"
+    placeholder="750">
+
+</div>
+
+</div>
+
+
+<div class="field">
+
+<label id="labelTutor">
+Nom du tuteur
+</label>
+
+<input
+    id="formTutor"
+    class="input">
+
+</div>
+
+
+<div class="field">
+
+<label id="labelPhone">
+Téléphone
+</label>
+
+<input
+    id="formPhone"
+    class="input"
+    inputmode="tel"
+    placeholder="0600000000">
+
+</div>
+
+
+<div class="form-grid">
+
+
+<div class="field">
+
+<label>
+Bénéficie du pack
+</label>
+
+<select
+    id="formPack"
+    class="select">
+
+<option value="نعم">
+نعم (Oui)
+</option>
+
+<option value="X">
+X (Non)
+</option>
+
+</select>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Taille
+</label>
+
+<input
+    id="formPackSize"
+    class="input"
+    placeholder="08, 10, 12, 16...">
+
+</div>
+
+</div>
+
+
+<div class="modal-footer">
+
+<button
+    type="button"
+    class="btn btn-gray"
+    onclick="closeModal()"
+    id="cancelButton">
+
+Annuler
+
+</button>
+
+
+<button
+    type="submit"
+    class="btn btn-blue"
+    id="saveButton">
+
+Enregistrer
+
+</button>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     TOAST
+===================================================== -->
+
+<div
+    id="toast"
+    class="toast">
+</div>
+
+
+<!-- =====================================================
+     APPLICATION JAVASCRIPT
+===================================================== -->
+
+<script>
+
+/* =====================================================
+   CONFIGURATION
+===================================================== */
+
+const APP_NAME = "A.E.S.T. Taounate";
+
+const SEASON = "2026-2027";
+
+const STORAGE_PLAYERS =
+    "aest_taounate_players_v3";
+
+const STORAGE_ATTENDANCE =
+    "aest_taounate_attendance_v3";
+
+const STORAGE_LANGUAGE =
+    "aest_taounate_language";
+
+
+/* =====================================================
+   DATA
+===================================================== */
+
+const initialPlayers = [
+
+{
+id:1,
+prenom:"حمزة",
+nom:"البوزيدي",
+dob:"26/03/2013",
+tuteur:"المصطفى الشارفي",
+phone:"",
+fees:"750,00",
+packBen:"نعم",
+packSize:"10"
+},
+
+{
+id:2,
+prenom:"محمد",
+nom:"الشارفي",
+dob:"",
+tuteur:"",
+phone:"",
+fees:"750,00",
+packBen:"نعم",
+packSize:"10"
+},
+
+{
+id:3,
+prenom:"عمران",
+nom:"الزاردلي",
+dob:"10/04/2017",
+tuteur:"فاطمة العقاري",
+phone:"",
+fees:"",
+packBen:"",
+packSize:""
+},
+
+{
+id:4,
+prenom:"إلياس",
+nom:"الخمراوي",
+dob:"",
+tuteur:"",
+phone:"",
+fees:"",
+packBen:"نعم",
+packSize:"08"
+},
+
+{
+id:5,
+prenom:"أنس",
+nom:"قلوبي",
+dob:"",
+tuteur:"",
+phone:"",
+fees:"",
+packBen:"نعم",
+packSize:"08"
+},
+
+{
+id:6,
+prenom:"جاد",
+nom:"البوزيدي",
+dob:"",
+tuteur:"",
+phone:"",
+fees:"",
+packBen:"نعم",
+packSize:"08"
+},
+
+{
+id:7,
+prenom:"إياد",
+nom:"ملاح",
+dob:"",
+tuteur:"",
+phone:"",
+fees:"",
+packBen:"نعم",
+packSize:"08"
+},
+
+{
+id:8,
+prenom:"محسن",
+nom:"دحمونني",
+dob:"",
+tuteur:"",
+phone:"",
+fees:"",
+packBen:"نعم",
+packSize:"08"
+},
+
+{
+id:9,
+prenom:"ريان",
+nom:"البكوري",
+dob:"",
+tuteur:"",
+phone:"",
+fees:"",
+packBen:"نعم",
+packSize:"08"
+},
+
+{
+id:10,
+prenom:"إيهاب",
+nom:"الفاضلي",
+dob:"",
+tuteur:"",
+phone:"",
+fees:"",
+packBen:"نعم",
+packSize:"08"
+},
+
+{
+id:11,
+prenom:"يونس",
+nom:"زدال",
+dob:"",
+tuteur:"",
+phone:"",
+fees:"",
+packBen:"نعم",
+packSize:"08"
+},
+
+{
+id:12,
+prenom:"أحمد",
+nom:"النبش",
+dob:"",
+tuteur:"",
+phone:"",
+fees:"",
+packBen:"نعم",
+packSize:"08"
+},
+
+{
+id:13,
+prenom:"أنيس",
+nom:"الإدريسي",
+dob:"",
+tuteur:"",
+phone:"",
+fees:"750,00",
+packBen:"نعم",
+packSize:"08"
+},
+
+{
+id:14,
+prenom:"محمد زياد",
+nom:"الذغاري",
+dob:"16/01/2018",
+tuteur:"حمة محمد الذغاري",
+phone:"",
+fees:"750,00",
+packBen:"نعم",
+packSize:"08"
+},
+
+{
+id:15,
+prenom:"لقمان",
+nom:"العومة",
+dob:"12/04/2018",
+tuteur:"أميمة قرطاف",
+phone:"",
+fees:"750,00",
+packBen:"X",
+packSize:"08"
+},
+
+{
+id:16,
+prenom:"ناصر",
+nom:"عورعور",
+dob:"09/02/2012",
+tuteur:"تميمزة الزرنيخ",
+phone:"",
+fees:"750,00",
+packBen:"X",
+packSize:"16"
+},
+
+{
+id:17,
+prenom:"خديجة",
+nom:"قلوبي",
+dob:"03/08/2015",
+tuteur:"نظيرة البجيرك",
+phone:"",
+fees:"750,00",
+packBen:"X",
+packSize:""
+},
+
+{
+id:18,
+prenom:"سعد",
+nom:"البوزيدي التايل",
+dob:"16/04/2015",
+tuteur:"ع الكريم البوزيدي التايل",
+phone:"",
+fees:"750,00",
+packBen:"X",
+packSize:"12"
+},
+
+{
+id:19,
+prenom:"جاد",
+nom:"أسمار",
+dob:"16/09/2015",
+tuteur:"ع المجيد أسمار",
+phone:"",
+fees:"750,00",
+packBen:"X",
+packSize:"10"
+},
+
+{
+id:20,
+prenom:"أحمد",
+nom:"سهلة",
+dob:"19/04/2016",
+tuteur:"مصطفى سهلة",
+phone:"",
+fees:"750,00",
+packBen:"X",
+packSize:"12"
+},
+
+{
+id:21,
+prenom:"معاد",
+nom:"باجو",
+dob:"16/03/2012",
+tuteur:"محمد بجو",
+phone:"",
+fees:"750,00",
+packBen:"X",
+packSize:"."
+},
+
+{
+id:22,
+prenom:"ياسين",
+nom:"العمراني",
+dob:"2012",
+tuteur:"مصطفى العمراني",
+phone:"",
+fees:"750,00",
+packBen:"X",
+packSize:"10"
+},
+
+{
+id:23,
+prenom:"أنس",
+nom:"التغزوي",
+dob:"19/02/2015",
+tuteur:"رشيد التغزوي",
+phone:"",
+fees:"750,00",
+packBen:"X",
+packSize:"10"
+},
+
+{
+id:24,
+prenom:"زياد",
+nom:"العبديوي",
+dob:"18/07/2014",
+tuteur:"فاطمة العبديوي",
+phone:"",
+fees:"750,00",
+packBen:"X",
+packSize:"12"
+},
+
+{
+id:25,
+prenom:"أيمن",
+nom:"المغمري",
+dob:"26/01/2012",
+tuteur:"ع الناصر العبديوي",
+phone:"",
+fees:"750,00",
+packBen:"X",
+packSize:"08"
+},
+
+{
+id:26,
+prenom:"يوسف",
+nom:"قشور",
+dob:"13/03/2013",
+tuteur:"محمد المغمري",
+phone:"",
+fees:"750,00",
+packBen:"X",
+packSize:"16"
+},
+
+{
+id:27,
+prenom:"مصطفى طه",
+nom:"سنان",
+dob:"05/11/2015",
+tuteur:"ع السلام قشور",
+phone:"",
+fees:"750,00",
+packBen:"X",
+packSize:"."
+},
+
+{
+id:28,
+prenom:"غسان",
+nom:"باجو",
+dob:"",
+tuteur:"نورة سنان",
+phone:"",
+fees:"750,00",
+packBen:"X",
+packSize:"08"
+},
+
+{
+id:29,
+prenom:"يحيى",
+nom:"باجو",
+dob:"01/05/2013",
+tuteur:"سعيد باجو",
+phone:"",
+fees:"750,00",
+packBen:"X",
+packSize:"12"
+},
+
+{
+id:30,
+prenom:"مهدي",
+nom:"العوني",
+dob:"01/01/2014",
+tuteur:"محمد العوني",
+phone:"",
+fees:"750,00",
+packBen:"نعم",
+packSize:"10"
+}
+
+];
+
+
+/* =====================================================
+   ADD DEMO PLAYERS 31 → 126
+===================================================== */
+
+for(let i=31;i<=126;i++){
+
+initialPlayers.push({
+
+id:i,
+
+prenom:`لاعب ${i}`,
+
+nom:`العائلة ${i}`,
+
+dob:"01/01/2015",
+
+tuteur:`ولي الأمر ${i}`,
+
+phone:"0600000000",
+
+fees:"750,00",
+
+packBen:i%2===0 ? "نعم" : "X",
+
+packSize:"10"
+
+});
+
+}
+
+
+/* =====================================================
+   LOAD DATA
+===================================================== */
+
+let players =
+JSON.parse(
+localStorage.getItem(STORAGE_PLAYERS)
+) || initialPlayers;
+
+let attendance =
+JSON.parse(
+localStorage.getItem(STORAGE_ATTENDANCE)
+) || {};
+
+let currentLanguage =
+localStorage.getItem(STORAGE_LANGUAGE)
+|| "fr";
+
+
+/* =====================================================
+   TRANSLATIONS
+===================================================== */
+
+const translations = {
+
+fr:{
+
+subtitle:`Saison ${SEASON} • Mode Hors-Ligne`,
+
+add:"Nouveau",
+
+dashboard:"Tableau de bord",
+
+players:"Effectif",
+
+attendance:"Présences",
+
+finances:"Finances & Packs",
+
+totalPlayers:"Total Joueurs",
+
+fees:"Recettes (DH)",
+
+packs:"Packs Attribués",
+
+description:
+"Gestion 100% hors-ligne. Les données restent sur cet appareil.",
+
+export:"Sauvegarder JSON",
+
+restore:"Restaurer",
+
+name:"Nom & Prénom",
+
+dob:"Date Naiss.",
+
+tutor:"Tuteur",
+
+phone:"Téléphone",
+
+amount:"Montant",
+
+actions:"Actions",
+
+attendanceTitle:"Feuille de présence",
+
+attendanceDescription:
+"Sélectionnez la date puis marquez les présents.",
+
+firstName:"Prénom",
+
+lastName:"Nom",
+
+cancel:"Annuler",
+
+save:"Enregistrer",
+
+newPlayer:"Ajouter un joueur",
+
+editPlayer:"Modifier le joueur",
+
+search:
+"Rechercher par nom, tuteur ou téléphone"
+
+},
+
+ar:{
+
+subtitle:`موسم ${SEASON} • تطبيق بدون إنترنت`,
+
+add:"إضافة لاعب",
+
+dashboard:"لوحة القيادة",
+
+players:"اللاعبون",
+
+attendance:"الحضور والغياب",
+
+finances:"المداخيل والأقمصة",
+
+totalPlayers:"إجمالي اللاعبين",
+
+fees:"المداخيل (درهم)",
+
+packs:"الحزم الموزعة",
+
+description:
+"تسيير 100% بدون إنترنت. تبقى البيانات محفوظة على هذا الجهاز.",
+
+export:"نسخ احتياطي",
+
+restore:"استرجاع",
+
+name:"الإسم الكامل",
+
+dob:"تاريخ الإزدياد",
+
+tutor:"ولي الأمر",
+
+phone:"الهاتف",
+
+amount:"مبلغ الأداء",
+
+actions:"الإجراءات",
+
+attendanceTitle:"ورقة حضور التداريب",
+
+attendanceDescription:
+"اختر التاريخ وحدد اللاعبين الحاضرين.",
+
+firstName:"الإسم",
+
+lastName:"النسب",
+
+cancel:"إلغاء",
+
+save:"حفظ",
+
+newPlayer:"إضافة لاعب",
+
+editPlayer:"تعديل اللاعب",
+
+search:
+"البحث بالإسم أو ولي الأمر أو الهاتف"
+
+}
+
+};
+
+
+/* =====================================================
+   UTILITY
+===================================================== */
+
+function parseMoney(value){
+
+const number =
+parseFloat(
+String(value ?? "")
+.replace(/\s/g,"")
+.replace(",",".")
+);
+
+return Number.isFinite(number)
+? number
+: 0;
+
+}
+
+
+function isPackBeneficiary(player){
+
+return (
+player.packBen === "نعم" ||
+player.packBen === "oui"
+);
+
+}
+
+
+function escapeHTML(value){
+
+return String(value ?? "")
+.replace(/[&<>"']/g,char => ({
+
+"&":"&amp;",
+"<":"&lt;",
+">":"&gt;",
+'"':"&quot;",
+"'":"&#39;"
+
+}[char]));
+
+}
+
+
+/* =====================================================
+   SAVE
+===================================================== */
+
+function saveData(){
+
+localStorage.setItem(
+STORAGE_PLAYERS,
+JSON.stringify(players)
+);
+
+localStorage.setItem(
+STORAGE_ATTENDANCE,
+JSON.stringify(attendance)
+);
+
+updateStatistics();
+
+}
+
+
+/* =====================================================
+   LANGUAGE
+===================================================== */
+
+function toggleLanguage(){
+
+currentLanguage =
+currentLanguage === "fr"
+? "ar"
+: "fr";
+
+localStorage.setItem(
+STORAGE_LANGUAGE,
+currentLanguage
+);
+
+updateTexts();
+
+renderPlayers();
+
+renderAttendance();
+
+updateFinances();
+
+}
+
+
+function updateTexts(){
+
+const t =
+translations[currentLanguage];
+
+document.documentElement.lang =
+currentLanguage;
+
+document.documentElement.dir =
+currentLanguage === "ar"
+? "rtl"
+: "ltr";
+
+
+document.getElementById(
+"headerSubtitle"
+).textContent = t.subtitle;
+
+
+document.getElementById(
+"addButtonText"
+).textContent = t.add;
+
+
+document.getElementById(
+"tabDashboard"
+).textContent = t.dashboard;
+
+
+document.getElementById(
+"tabPlayers"
+).textContent =
+`${t.players} (${players.length})`;
+
+
+document.getElementById(
+"tabAttendance"
+).textContent = t.attendance;
+
+
+document.getElementById(
+"tabFinances"
+).textContent = t.finances;
+
+
+document.getElementById(
+"labelTotalPlayers"
+).textContent = t.totalPlayers;
+
+
+document.getElementById(
+"labelTotalFees"
+).textContent = t.fees;
+
+
+document.getElementById(
+"labelTotalPacks"
+).textContent = t.packs;
+
+
+document.getElementById(
+"dashboardDescription"
+).textContent =
+t.description;
+
+
+document.getElementById(
+"exportButtonText"
+).textContent = t.export;
+
+
+document.getElementById(
+"importButtonText"
+).textContent = t.restore;
+
+
+document.getElementById(
+"headerName"
+).textContent = t.name;
+
+
+document.getElementById(
+"headerDob"
+).textContent = t.dob;
+
+
+document.getElementById(
+"headerTutor"
+).textContent = t.tutor;
+
+
+document.getElementById(
+"headerPhone"
+).textContent = t.phone;
+
+
+document.getElementById(
+"headerFees"
+).textContent = t.amount;
+
+
+document.getElementById(
+"headerActions"
+).textContent = t.actions;
+
+
+document.getElementById(
+"attendanceTitle"
+).textContent =
+t.attendanceTitle;
+
+
+document.getElementById(
+"attendanceDescription"
+).textContent =
+t.attendanceDescription;
+
+
+document.getElementById(
+"labelFirstName"
+).textContent = t.firstName;
+
+
+document.getElementById(
+"labelLastName"
+).textContent = t.lastName;
+
+
+document.getElementById(
+"labelDob"
+).textContent = t.dob;
+
+
+document.getElementById(
+"labelFees"
+).textContent = t.amount;
+
+
+document.getElementById(
+"labelTutor"
+).textContent = t.tutor;
+
+
+document.getElementById(
+"labelPhone"
+).textContent = t.phone;
+
+
+document.getElementById(
+"cancelButton"
+).textContent = t.cancel;
+
+
+document.getElementById(
+"saveButton"
+).textContent = t.save;
+
+
+document.getElementById(
+"searchInput"
+).placeholder = t.search;
+
+}
+
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+function switchTab(tab){
+
+document.querySelectorAll(".view")
+.forEach(section => {
+
+section.classList.add("hidden");
+
+});
+
+
+const target =
+document.getElementById(
+`view${capitalize(tab)}`
+);
+
+if(target){
+
+target.classList.remove("hidden");
+
+}
+
+
+document.querySelectorAll(".tab")
+.forEach(button => {
+
+button.classList.toggle(
+"active",
+button.dataset.tab === tab
+);
+
+});
+
+
+if(tab === "attendance"){
+
+renderAttendance();
+
+}
+
+
+if(tab === "finances"){
+
+updateFinances();
+
+}
+
+}
+
+
+function capitalize(value){
+
+return value.charAt(0).toUpperCase()
++ value.slice(1);
+
+}
+
+
+/* =====================================================
+   STATISTICS
+===================================================== */
+
+function updateStatistics(){
+
+let totalFees = 0;
+
+let totalPacks = 0;
+
+
+players.forEach(player => {
+
+totalFees += parseMoney(
+player.fees
+);
+
+if(
+isPackBeneficiary(player)
+){
+
+totalPacks++;
+
+}
+
+});
+
+
+document.getElementById(
+"statTotalPlayers"
+).textContent =
+players.length;
+
+
+document.getElementById(
+"statTotalFees"
+).textContent =
+totalFees.toLocaleString("fr-FR")
++ " DH";
+
+
+document.getElementById(
+"statTotalPacks"
+).textContent =
+totalPacks;
+
+}
+
+
+/* =====================================================
+   PLAYERS
+===================================================== */
+
+function renderPlayers(){
+
+const query =
+document.getElementById(
+"searchInput"
+).value
+.trim()
+.toLowerCase();
+
+
+const filter =
+document.getElementById(
+"packFilter"
+).value;
+
+
+const body =
+document.getElementById(
+"playersTableBody"
+);
+
+
+body.innerHTML = "";
+
+
+const filteredPlayers =
+players.filter(player => {
+
+const searchable =
+`${player.prenom}
+ ${player.nom}
+ ${player.tuteur}
+ ${player.phone}`
+.toLowerCase();
+
+
+if(
+!searchable.includes(query)
+){
+
+return false;
+
+}
+
+
+if(
+filter === "yes" &&
+!isPackBeneficiary(player)
+){
+
+return false;
+
+}
+
+
+if(
+filter === "no" &&
+isPackBeneficiary(player)
+){
+
+return false;
+
+}
+
+
+return true;
+
+});
+
+
+if(!filteredPlayers.length){
+
+body.innerHTML = `
+
+<tr>
+
+<td
+colspan="8"
+class="empty">
+
+${
+currentLanguage === "ar"
+? "لا توجد نتائج"
+: "Aucun résultat"
+}
+
+</td>
+
+</tr>
+
+`;
+
+return;
+
+}
+
+
+filteredPlayers.forEach(
+(player,index) => {
+
+const row =
+document.createElement("tr");
+
+
+const pack =
+isPackBeneficiary(player);
+
+
+row.innerHTML = `
+
+<td>
+${index + 1}
+</td>
+
+<td>
+<strong>
+${escapeHTML(player.prenom)}
+${" "}
+${escapeHTML(player.nom)}
+</strong>
+</td>
+
+<td>
+${escapeHTML(player.dob) || "-"}
+</td>
+
+<td>
+${escapeHTML(player.tuteur) || "-"}
+</td>
+
+<td>
+${escapeHTML(player.phone) || "-"}
+</td>
+
+<td>
+
+<span class="badge badge-green">
+
+${
+player.fees
+? escapeHTML(player.fees)
+: "0"
+}
+
+ DH
+
+</span>
+
+</td>
+
+<td>
+
+<span class="badge ${
+pack
+? "badge-green"
+: "badge-gray"
+}">
+
+${escapeHTML(player.packBen || "X")}
+
+${
+player.packSize
+? ` (${escapeHTML(player.packSize)})`
+: ""
+}
+
+</span>
+
+</td>
+
+<td>
+
+<button
+class="icon-button"
+onclick="editPlayer(${player.id})"
+title="Modifier">
+
+✎
+
+</button>
+
+<button
+class="icon-button"
+onclick="deletePlayer(${player.id})"
+title="Supprimer">
+
+🗑
+
+</button>
+
+</td>
+
+`;
+
+
+body.appendChild(row);
+
+});
+
+}
+
+
+/* =====================================================
+   ATTENDANCE
+===================================================== */
+
+function getToday(){
+
+return new Date()
+.toISOString()
+.slice(0,10);
+
+}
+
+
+function renderAttendance(){
+
+const dateInput =
+document.getElementById(
+"attendanceDate"
+);
+
+
+if(!dateInput.value){
+
+dateInput.value =
+getToday();
+
+}
+
+
+const date =
+dateInput.value;
+
+
+if(!attendance[date]){
+
+attendance[date] = {};
+
+}
+
+
+const body =
+document.getElementById(
+"attendanceTableBody"
+);
+
+
+body.innerHTML = "";
+
+
+players.forEach(
+(player,index) => {
+
+const present =
+attendance[date][player.id]
+=== true;
+
+
+const row =
+document.createElement("tr");
+
+
+row.innerHTML = `
+
+<td>
+${index + 1}
+</td>
+
+<td>
+
+<strong>
+
+${escapeHTML(player.prenom)}
+${" "}
+${escapeHTML(player.nom)}
+
+</strong>
+
+</td>
+
+<td style="text-align:center">
+
+<button
+class="btn ${
+present
+? "btn-green"
+: "btn-gray"
+}"
+onclick="toggleAttendance(${player.id})">
+
+${
+present
+? "✓ Présent"
+: "✗ Absent"
+}
+
+</button>
+
+</td>
+
+`;
+
+
+body.appendChild(row);
+
+});
+
+}
+
+
+function toggleAttendance(playerId){
+
+const date =
+document.getElementById(
+"attendanceDate"
+).value;
+
+
+if(!attendance[date]){
+
+attendance[date] = {};
+
+}
+
+
+attendance[date][playerId] =
+!attendance[date][playerId];
+
+
+saveData();
+
+renderAttendance();
+
+}
+
+
+/* =====================================================
+   FINANCES
+===================================================== */
+
+function updateFinances(){
+
+let totalFees = 0;
+
+let payers = 0;
+
+let packs = 0;
+
+
+players.forEach(player => {
+
+const amount =
+parseMoney(player.fees);
+
+
+if(amount > 0){
+
+totalFees += amount;
+
+payers++;
+
+}
+
+
+if(
+isPackBeneficiary(player)
+){
+
+packs++;
+
+}
+
+});
+
+
+document.getElementById(
+"financeTotalFees"
+).textContent =
+totalFees.toLocaleString("fr-FR")
++ " DH";
+
+
+document.getElementById(
+"financePayers"
+).textContent =
+
+`${payers} ${
+currentLanguage === "ar"
+? "مؤدٍ"
+: "payeurs"
+}`;
+
+
+document.getElementById(
+"financeTotalPacks"
+).textContent =
+packs;
+
+
+document.getElementById(
+"financePackRatio"
+).textContent =
+
+(
+players.length
+? Math.round(
+packs / players.length * 100
+)
+: 0
+)
++ "%";
+
+}
+
+
+/* =====================================================
+   ADD PLAYER
+===================================================== */
+
+function openAddModal(){
+
+document.getElementById(
+"playerForm"
+).reset();
+
+
+document.getElementById(
+"playerId"
+).value = "";
+
+
+document.getElementById(
+"modalTitle"
+).textContent =
+translations[currentLanguage]
+.newPlayer;
+
+
+document.getElementById(
+"playerModal"
+).classList.remove("hidden");
+
+}
+
+
+/* =====================================================
+   EDIT PLAYER
+===================================================== */
+
+function editPlayer(id){
+
+const player =
+players.find(
+item => item.id === id
+);
+
+
+if(!player){
+
+return;
+
+}
+
+
+document.getElementById(
+"playerId"
+).value =
+player.id;
+
+
+document.getElementById(
+"formFirstName"
+).value =
+player.prenom || "";
+
+
+document.getElementById(
+"formLastName"
+).value =
+player.nom || "";
+
+
+document.getElementById(
+"formDob"
+).value =
+player.dob || "";
+
+
+document.getElementById(
+"formFees"
+).value =
+player.fees || "";
+
+
+document.getElementById(
+"formTutor"
+).value =
+player.tuteur || "";
+
+
+document.getElementById(
+"formPhone"
+).value =
+player.phone || "";
+
+
+document.getElementById(
+"formPack"
+).value =
+player.packBen || "X";
+
+
+document.getElementById(
+"formPackSize"
+).value =
+player.packSize || "";
+
+
+document.getElementById(
+"modalTitle"
+).textContent =
+translations[currentLanguage]
+.editPlayer;
+
+
+document.getElementById(
+"playerModal"
+).classList.remove("hidden");
+
+}
+
+
+/* =====================================================
+   CLOSE MODAL
+===================================================== */
+
+function closeModal(){
+
+document.getElementById(
+"playerModal"
+).classList.add("hidden");
+
+}
+
+
+/* =====================================================
+   SAVE PLAYER
+===================================================== */
+
+function savePlayer(event){
+
+event.preventDefault();
+
+
+const id =
+Number(
+document.getElementById(
+"playerId"
+).value
+);
+
+
+const player = {
+
+id:
+id ||
+(
+players.length
+? Math.max(
+...players.map(
+item => item.id
+)
+) + 1
+: 1
+),
+
+prenom:
+document.getElementById(
+"formFirstName"
+).value.trim(),
+
+nom:
+document.getElementById(
+"formLastName"
+).value.trim(),
+
+dob:
+document.getElementById(
+"formDob"
+).value.trim(),
+
+fees:
+document.getElementById(
+"formFees"
+).value.trim(),
+
+tuteur:
+document.getElementById(
+"formTutor"
+).value.trim(),
+
+phone:
+document.getElementById(
+"formPhone"
+).value.trim(),
+
+packBen:
+document.getElementById(
+"formPack"
+).value,
+
+packSize:
+document.getElementById(
+"formPackSize"
+).value.trim()
+
+};
+
+
+if(id){
+
+const index =
+players.findIndex(
+item => item.id === id
+);
+
+
+if(index !== -1){
+
+players[index] =
+player;
+
+}
+
+}else{
+
+players.push(player);
+
+}
+
+
+saveData();
+
+closeModal();
+
+renderPlayers();
+
+updateTexts();
+
+updateFinances();
+
+showToast(
+
+currentLanguage === "ar"
+? "تم حفظ بيانات اللاعب"
+: "Joueur enregistré"
+
+);
+
+}
+
+
+/* =====================================================
+   DELETE PLAYER
+===================================================== */
+
+function deletePlayer(id){
+
+const player =
+players.find(
+item => item.id === id
+);
+
+
+if(!player){
+
+return;
+
+}
+
+
+const message =
+currentLanguage === "ar"
+
+? "هل تريد حذف هذا اللاعب؟"
+
+: "Voulez-vous supprimer ce joueur ?";
+
+
+if(
+!window.confirm(message)
+){
+
+return;
+
+}
+
+
+players =
+players.filter(
+item => item.id !== id
+);
+
+
+saveData();
+
+renderPlayers();
+
+updateTexts();
+
+updateFinances();
+
+showToast(
+
+currentLanguage === "ar"
+? "تم حذف اللاعب"
+: "Joueur supprimé"
+
+);
+
+}
+
+
+/* =====================================================
+   EXPORT
+===================================================== */
+
+function exportData(){
+
+const backup = {
+
+app:APP_NAME,
+
+version:3,
+
+season:SEASON,
+
+date:new Date().toISOString(),
+
+players:players,
+
+attendance:attendance
+
+};
+
+
+const blob =
+new Blob(
+[
+JSON.stringify(
+backup,
+null,
+2
+)
+],
+{
+type:"application/json"
+}
+);
+
+
+const url =
+URL.createObjectURL(blob);
+
+
+const link =
+document.createElement("a");
+
+
+link.href = url;
+
+link.download =
+`AEST_Taounate_Backup_${SEASON}.json`;
+
+
+document.body.appendChild(link);
+
+link.click();
+
+link.remove();
+
+URL.revokeObjectURL(url);
+
+
+showToast(
+
+currentLanguage === "ar"
+? "تم إنشاء النسخة الاحتياطية"
+: "Sauvegarde créée"
+
+);
+
+}
+
+
+/* =====================================================
+   IMPORT
+===================================================== */
+
+document.getElementById(
+"importFile"
+).addEventListener(
+"change",
+function(event){
+
+const file =
+event.target.files[0];
+
+
+if(!file){
+
+return;
+
+}
+
+
+const reader =
+new FileReader();
+
+
+reader.onload =
+function(){
+
+try{
+
+const backup =
+JSON.parse(
+reader.result
+);
+
+
+if(
+!Array.isArray(
+backup.players
+)
+){
+
+throw new Error(
+"Invalid backup"
+);
+
+}
+
+
+players =
+backup.players;
+
+
+attendance =
+backup.attendance || {};
+
+
+saveData();
+
+renderPlayers();
+
+renderAttendance();
+
+updateFinances();
+
+updateTexts();
+
+
+showToast(
+
+currentLanguage === "ar"
+? "تم استرجاع البيانات بنجاح"
+: "Données restaurées"
+
+);
+
+
+}catch(error){
+
+alert(
+
+currentLanguage === "ar"
+? "الملف غير صالح"
+: "Fichier JSON invalide"
+
+);
+
+}
+
+event.target.value = "";
+
+};
+
+
+reader.readAsText(
+file,
+"UTF-8"
+);
+
+});
+
+
+/* =====================================================
+   TOAST
+===================================================== */
+
+function showToast(message){
+
+const toast =
+document.getElementById(
+"toast"
+);
+
+
+toast.textContent =
+message;
+
+
+toast.classList.add(
+"show"
+);
+
+
+clearTimeout(
+window.toastTimer
+);
+
+
+window.toastTimer =
+setTimeout(
+() => {
+
+toast.classList.remove(
+"show"
+);
+
+},
+2200
+);
+
+}
+
+
+/* =====================================================
+   CLOSE MODAL WITH ESC
+===================================================== */
+
+document.addEventListener(
+"keydown",
+function(event){
+
+if(
+event.key === "Escape"
+){
+
+closeModal();
+
+}
+
+});
+
+
+/* =====================================================
+   SERVICE WORKER
+===================================================== */
+
+if(
+"serviceWorker"
+in navigator
+){
+
+window.addEventListener(
+"load",
+function(){
+
+navigator.serviceWorker
+.register(
+"sw.js"
+)
+.catch(
+error => {
+
+console.warn(
+"Service Worker:",
+error
+);
+
+});
+
+});
+
+}
+
+
+/* =====================================================
+   INITIALIZATION
+===================================================== */
+
+window.addEventListener(
+"DOMContentLoaded",
+function(){
+
+updateTexts();
+
+updateStatistics();
+
+renderPlayers();
+
+document.getElementById(
+"attendanceDate"
+).value =
+getToday();
+
+renderAttendance();
+
+updateFinances();
+
+});
+
+</script>
+
+</body>
+</html>
