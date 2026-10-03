@@ -1,1 +1,0 @@
-{"name":"aest-taounate","version":"1.0.0","private":true,"scripts":{"sync":"npx cap sync android","add:android":"npx cap add android"},"dependencies":{"@capacitor/core":"latest","@capacitor/android":"latest"},"devDependencies":{"@capacitor/cli":"latest"}}
