@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>A.E.S.T. Taounate - Gestion École de Sport 2026-2027</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        aest: {
+                            blue: '#0284c7', // Sky Blue
+                            darkblue: '#0369a1',
+                            orange: '#f97316', // Vibrant Orange
+                            darkorange: '#ea580c',
+                            light: '#f8fafc',
+                            dark: '#0f172a'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Cairo', 'sans-serif'],
+                        arabic: ['Cairo', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.25s ease-out forwards; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col selection:bg-aest-orange selection:text-white">
+
+    <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3 rtl:space-x-reverse">
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-aest-blue to-aest-orange flex items-center justify-center text-white shadow-lg shadow-aest-blue/20 ring-2 ring-white/10">
+                    <span class="text-2xl font-black">★</span>
+                </div>
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <h1 class="font-black text-lg tracking-wider text-white">A.E.S.T.</h1>
+                        <span class="text-xs bg-aest-orange/20 text-aest-orange px-2 py-0.5 rounded-full font-bold border border-aest-orange/30">2026-2027</span>
+                    </div>
+                    <p class="text-xs text-slate-400 truncate max-w-[200px] sm:max-w-xs">Association des Étoiles Sportive Taounate</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-2 rtl:space-x-reverse">
+                <button id="langToggleBtn" onclick="toggleLanguage()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 border border-slate-700 transition flex items-center space-x-1">
+                    <i data-lucide="languages" class="w-3.5 h-3.5 text-aest-blue"></i>
+                    <span id="langLabel">FR / العربية</span>
+                </button>
+                <button onclick="openSyncModal()" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition" title="Export / Import">
+                    <i data-lucide="database" class="w-4 h-4 text-aest-orange"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Tab Navigation Bar -->
+        <div class="max-w-7xl mx-auto px-4 flex space-x-1 overflow-x-auto hide-scrollbar border-t border-slate-800/60 py-2">
+            <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-tab flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap bg-aest-blue text-white shadow-md shadow-aest-blue/20">
+                <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                <span data-i18n="nav_dashboard">Tableau de Bord</span>
+            </button>
+            <button onclick="switchTab('roster')" id="nav-roster" class="nav-tab flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-semibold transition whitespace-nowrap text-slate-400 hover:bg-slate-800 hover:text-white">
+                <i data-lucide="users" class="w-4 h-4"></i>
+                <span data-i18n="nav_roster">Effectif Joueurs</span>
+                <span id="rosterCountBadge" class="ml-1.5 px-1.5 py-0.2 rounded-full bg-slate-800 text-[10px] text-slate-300">0</span>
+            </button>
+            <button onclick="switchTab('finance')" id="nav-finance" class="nav-tab flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-semibold transition whitespace-nowrap text-slate-400 hover:bg-slate-800 hover:text-white">
+                <i data-lucide="wallet" class="w-4 h-4"></i>
+                <span data-i18n="nav_finance">Finances & Cotisations</span>
+            </button>
+            <button onclick="switchTab('attendance')" id="nav-attendance" class="nav-tab flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-semibold transition whitespace-nowrap text-slate-400 hover:bg-slate-800 hover:text-white">
+                <i data-lucide="clipboard-check" class="w-4 h-4"></i>
+                <span data-i18n="nav_attendance">Feuille de Présence</span>
+            </button>
+            <button onclick="switchTab('packs')" id="nav-packs" class="nav-tab flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-semibold transition whitespace-nowrap text-slate-400 hover:bg-slate-800 hover:text-white">
+                <i data-lucide="package" class="w-4 h-4"></i>
+                <span data-i18n="nav_packs">Packs & Équipements</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 mb-20">
+
+        <!-- TAB 1: DASHBOARD -->
+        <section id="tab-dashboard" class="tab-content space-y-6 animate-fade-in">
+            <!-- Welcome Banner -->
+            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-800 via-slate-800/90 to-slate-900 p-6 border border-slate-700 shadow-xl">
+                <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-aest-orange/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute right-20 top-0 w-32 h-32 bg-aest-blue/10 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                        <div class="inline-flex items-center space-x-2 px-2.5 py-1 rounded-lg bg-aest-blue/20 text-aest-blue text-xs font-bold mb-2 border border-aest-blue/30">
+                            <i data-lucide="shield" class="w-3.5 h-3.5"></i>
+                            <span data-i18n="season_label">Saison Sportive 2026-2027</span>
+                        </div>
+                        <h2 class="text-2xl sm:text-3xl font-black text-white" data-i18n="dash_welcome">Gestion Officielle A.E.S.T.</h2>
+                        <p class="text-sm text-slate-400 mt-1 max-w-xl" data-i18n="dash_subtitle">Suivi complet des joueurs, cotisations financières, présences et distribution d'équipements sportifs à Taounate.</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="openPlayerModal()" class="px-4 py-2.5 bg-gradient-to-r from-aest-blue to-aest-darkblue hover:from-aest-darkblue hover:to-aest-blue text-white rounded-xl text-xs font-bold shadow-lg shadow-aest-blue/25 transition flex items-center space-x-2">
+                            <i data-lucide="user-plus" class="w-4 h-4"></i>
+                            <span data-i18n="btn_add_player">Nouveau Joueur</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-slate-800/80 backdrop-blur rounded-2xl p-5 border border-slate-700/80 shadow-lg relative overflow-hidden">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs font-medium text-slate-400 uppercase tracking-wider" data-i18n="stat_total_players">Total Joueurs</p>
+                            <h3 id="statTotalPlayers" class="text-3xl font-black text-white mt-2">0</h3>
+                        </div>
+                        <div class="p-3 rounded-xl bg-aest-blue/15 text-aest-blue">
+                            <i data-lucide="users" class="w-6 h-6"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center text-xs text-emerald-400">
+                        <i data-lucide="trending-up" class="w-3.5 h-3.5 mr-1"></i>
+                        <span data-i18n="stat_active_roster">Effectif Complet Enregistré</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/80 backdrop-blur rounded-2xl p-5 border border-slate-700/80 shadow-lg relative overflow-hidden">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs font-medium text-slate-400 uppercase tracking-wider" data-i18n="stat_collected">Cotisations Perçues</p>
+                            <h3 id="statCollected" class="text-3xl font-black text-emerald-400 mt-2">0 DH</h3>
+                        </div>
+                        <div class="p-3 rounded-xl bg-emerald-500/15 text-emerald-400">
+                            <i data-lucide="wallet" class="w-6 h-6"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center text-xs text-slate-400">
+                        <span id="statPaidCount">0 payés sur 126+</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/80 backdrop-blur rounded-2xl p-5 border border-slate-700/80 shadow-lg relative overflow-hidden">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs font-medium text-slate-400 uppercase tracking-wider" data-i18n="stat_packs_distributed">Packs Distribués</p>
+                            <h3 id="statPacks" class="text-3xl font-black text-aest-orange mt-2">0</h3>
+                        </div>
+                        <div class="p-3 rounded-xl bg-aest-orange/15 text-aest-orange">
+                            <i data-lucide="package-check" class="w-6 h-6"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center text-xs text-slate-400">
+                        <span data-i18n="stat_full_kit">Équipement complet A.E.S.T.</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/80 backdrop-blur rounded-2xl p-5 border border-slate-700/80 shadow-lg relative overflow-hidden">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs font-medium text-slate-400 uppercase tracking-wider" data-i18n="stat_categories">Catégories</p>
+                            <h3 class="text-3xl font-black text-sky-400 mt-2">5</h3>
+                        </div>
+                        <div class="p-3 rounded-xl bg-sky-500/15 text-sky-400">
+                            <i data-lucide="trophy" class="w-6 h-6"></i>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center text-xs text-slate-400">
+                        <span data-i18n="stat_categories_sub">U7, U9, U11, U13, U15/U17</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Details Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Category Breakdown -->
+                <div class="bg-slate-800/80 backdrop-blur rounded-2xl p-5 border border-slate-700/80 shadow-lg">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-sm text-white flex items-center gap-2">
+                            <i data-lucide="pie-chart" class="w-4 h-4 text-aest-blue"></i>
+                            <span data-i18n="sec_categories_breakdown">Répartition par Catégorie</span>
+                        </h3>
+                    </div>
+                    <div id="categoryStatsContainer" class="space-y-3">
+                        <!-- Dynamically filled -->
+                    </div>
+                </div>
+
+                <!-- Recent Payments / Activity -->
+                <div class="lg:col-span-2 bg-slate-800/80 backdrop-blur rounded-2xl p-5 border border-slate-700/80 shadow-lg">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-sm text-white flex items-center gap-2">
+                            <i data-lucide="activity" class="w-4 h-4 text-aest-orange"></i>
+                            <span data-i18n="sec_recent_activity">Dernières Activités & Paiements Récents</span>
+                        </h3>
+                        <button onclick="switchTab('finance')" class="text-xs text-aest-blue hover:underline font-semibold" data-i18n="view_all">Voir tout</button>
+                    </div>
+                    <div id="recentActivityList" class="space-y-3 overflow-y-auto max-h-[300px] hide-scrollbar">
+                        <!-- Dynamically filled -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: ROSTER (EFFECTIF) -->
+        <section id="tab-roster" class="tab-content hidden space-y-6 animate-fade-in">
+            <div class="bg-slate-800/80 backdrop-blur rounded-2xl p-4 sm:p-6 border border-slate-700/80 shadow-lg">
+                <div class="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4 mb-6">
+                    <div>
+                        <h2 class="text-xl font-black text-white" data-i18n="roster_title">Effectif Officiel des Joueurs</h2>
+                        <p class="text-xs text-slate-400 mt-0.5" data-i18n="roster_subtitle">Liste complète de l'école de sport A.E.S.T. (126+ joueurs)</p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button onclick="openPlayerModal()" class="px-3.5 py-2 bg-aest-blue hover:bg-aest-darkblue text-white rounded-xl text-xs font-bold transition flex items-center space-x-1.5 shadow">
+                            <i data-lucide="user-plus" class="w-4 h-4"></i>
+                            <span data-i18n="btn_add_player">Ajouter</span>
+                        </button>
+                        <button onclick="resetDefaultData()" class="px-3.5 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-xl text-xs font-semibold transition flex items-center space-x-1.5">
+                            <i data-lucide="rotate-ccw" class="w-4 h-4 text-aest-orange"></i>
+                            <span data-i18n="btn_reset_data">Restaurer Données Officielles</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Search & Filters -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+                    <div class="relative">
+                        <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3"></i>
+                        <input type="text" id="searchInput" oninput="renderRoster()" placeholder="Rechercher par nom, tuteur, téléphone..." class="w-full bg-slate-900/90 border border-slate-700 rounded-xl pl-10 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-aest-blue">
+                    </div>
+                    <div>
+                        <select id="filterCategory" onchange="renderRoster()" class="w-full bg-slate-900/90 border border-slate-700 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-aest-blue">
+                            <option value="">Toutes les Catégories</option>
+                            <option value="U7">U7</option>
+                            <option value="U9">U9</option>
+                            <option value="U11">U11</option>
+                            <option value="U13">U13</option>
+                            <option value="U15">U15</option>
+                            <option value="U17">U17</option>
+                        </select>
+                    </div>
+                    <div>
+                        <select id="filterPayment" onchange="renderRoster()" class="w-full bg-slate-900/90 border border-slate-700 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-aest-blue">
+                            <option value="">Tous les Paiements</option>
+                            <option value="paid">Payé / À jour</option>
+                            <option value="unpaid">Non payé / En retard</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Roster Table / Cards -->
+                <div class="overflow-x-auto rounded-xl border border-slate-700">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-900/90 text-[11px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-700">
+                                <th class="p-3.5" data-i18n="col_player">Joueur</th>
+                                <th class="p-3.5" data-i18n="col_category">Catégorie</th>
+                                <th class="p-3.5" data-i18n="col_guardian">Tuteur / Contact</th>
+                                <th class="p-3.5" data-i18n="col_fees">Cotisation</th>
+                                <th class="p-3.5" data-i18n="col_pack">Pack / Taille</th>
+                                <th class="p-3.5 text-right" data-i18n="col_actions">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rosterTableBody" class="divide-y divide-slate-800 text-xs">
+                            <!-- Dynamically loaded -->
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Pagination / Counter info -->
+                <div class="mt-4 flex justify-between items-center text-xs text-slate-400">
+                    <span id="rosterCountText">Affichage de 0 joueurs</span>
+                    <div class="flex gap-2">
+                        <button onclick="exportToCSV()" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded-lg font-semibold flex items-center space-x-1">
+                            <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5 text-emerald-400"></i>
+                            <span>Export CSV</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: FINANCE (SUIVI DES PAIEMENTS) -->
+        <section id="tab-finance" class="tab-content hidden space-y-6 animate-fade-in">
+            <div class="bg-slate-800/80 backdrop-blur rounded-2xl p-4 sm:p-6 border border-slate-700/80 shadow-lg">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                    <div>
+                        <h2 class="text-xl font-black text-white" data-i18n="finance_title">Suivi Financier & Cotisations</h2>
+                        <p class="text-xs text-slate-400 mt-0.5" data-i18n="finance_subtitle">Gestion des paiements mensuels et frais d'inscription Saison 2026-2027</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <div class="bg-slate-900 px-4 py-2 rounded-xl border border-slate-700 flex items-center space-x-3">
+                            <span class="text-xs text-slate-400" data-i18n="total_encaisse">Total Encaissé:</span>
+                            <span id="totalEncaisseVal" class="text-emerald-400 font-black text-base">0 DH</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Finance Filter -->
+                <div class="flex flex-col sm:flex-row gap-3 mb-6">
+                    <div class="flex-1 relative">
+                        <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3"></i>
+                        <input type="text" id="financeSearchInput" oninput="renderFinance()" placeholder="Filtrer par nom de joueur..." class="w-full bg-slate-900/90 border border-slate-700 rounded-xl pl-10 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-aest-blue">
+                    </div>
+                </div>
+
+                <!-- Finance Table -->
+                <div class="overflow-x-auto rounded-xl border border-slate-700">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-900/90 text-[11px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-700">
+                                <th class="p-3.5" data-i18n="col_player">Joueur</th>
+                                <th class="p-3.5" data-i18n="col_category">Catégorie</th>
+                                <th class="p-3.5" data-i18n="col_fee_status">Statut Cotisation</th>
+                                <th class="p-3.5" data-i18n="col_amount">Montant Payé (DH)</th>
+                                <th class="p-3.5" data-i18n="col_date">Date de Paiement</th>
+                                <th class="p-3.5 text-right" data-i18n="col_actions">Action Paiement</th>
+                            </tr>
+                        </thead>
+                        <tbody id="financeTableBody" class="divide-y divide-slate-800 text-xs">
+                            <!-- Dynamically loaded -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: ATTENDANCE (FEUILLE DE PRÉSENCE) -->
+        <section id="tab-attendance" class="tab-content hidden space-y-6 animate-fade-in">
+            <div class="bg-slate-800/80 backdrop-blur rounded-2xl p-4 sm:p-6 border border-slate-700/80 shadow-lg">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                    <div>
+                        <h2 class="text-xl font-black text-white" data-i18n="att_title">Feuille de Présence des Entraînements</h2>
+                        <p class="text-xs text-slate-400 mt-0.5" data-i18n="att_subtitle">Pointer la présence aux séances par catégorie et par date</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <input type="date" id="attendanceDate" onchange="renderAttendance()" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-aest-blue">
+                        <button onclick="saveAttendance()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition flex items-center space-x-1.5 shadow">
+                            <i data-lucide="check-circle" class="w-4 h-4"></i>
+                            <span data-i18n="btn_save_attendance">Enregistrer la Feuille</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-3 mb-6">
+                    <select id="attendanceCategoryFilter" onchange="renderAttendance()" class="bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-aest-blue">
+                        <option value="U7">Catégorie U7</option>
+                        <option value="U9">Catégorie U9</option>
+                        <option value="U11" selected>Catégorie U11</option>
+                        <option value="U13">Catégorie U13</option>
+                        <option value="U15">Catégorie U15 / U17</option>
+                    </select>
+                </div>
+
+                <div class="overflow-x-auto rounded-xl border border-slate-700">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-900/90 text-[11px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-700">
+                                <th class="p-3.5">#</th>
+                                <th class="p-3.5" data-i18n="col_player">Nom du Joueur</th>
+                                <th class="p-3.5" data-i18n="col_category">Catégorie</th>
+                                <th class="p-3.5 text-center" data-i18n="col_present">Présent (✓)</th>
+                                <th class="p-3.5 text-center" data-i18n="col_absent">Absent (✗)</th>
+                                <th class="p-3.5 text-center" data-i18n="col_excused">Excusé (E)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendanceTableBody" class="divide-y divide-slate-800 text-xs">
+                            <!-- Dynamically loaded -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: PACKS & EQUIPMENT -->
+        <section id="tab-packs" class="tab-content hidden space-y-6 animate-fade-in">
+            <div class="bg-slate-800/80 backdrop-blur rounded-2xl p-4 sm:p-6 border border-slate-700/80 shadow-lg">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                    <div>
+                        <h2 class="text-xl font-black text-white" data-i18n="packs_title">Gestion des Packs & Équipements Sportifs</h2>
+                        <p class="text-xs text-slate-400 mt-0.5" data-i18n="packs_subtitle">Suivi de la distribution des équipements (Maillots, Shorts, Survêtements A.E.S.T.)</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <div class="bg-slate-900 px-4 py-2 rounded-xl border border-slate-700 flex items-center space-x-3">
+                            <span class="text-xs text-slate-400" data-i18n="total_distributed">Packs Remis:</span>
+                            <span id="totalPacksVal" class="text-aest-orange font-black text-base">0 / 0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-3 mb-6">
+                    <div class="flex-1 relative">
+                        <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3"></i>
+                        <input type="text" id="packSearchInput" oninput="renderPacks()" placeholder="Rechercher par nom..." class="w-full bg-slate-900/90 border border-slate-700 rounded-xl pl-10 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-aest-blue">
+                    </div>
+                    <div>
+                        <select id="packStatusFilter" onchange="renderPacks()" class="bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-aest-blue">
+                            <option value="">Tous les statuts pack</option>
+                            <option value="delivered">Pack Livré</option>
+                            <option value="pending">En attente de livraison</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto rounded-xl border border-slate-700">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-900/90 text-[11px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-700">
+                                <th class="p-3.5" data-i18n="col_player">Joueur</th>
+                                <th class="p-3.5" data-i18n="col_category">Catégorie</th>
+                                <th class="p-3.5" data-i18n="col_pack_benefit">Type de Pack</th>
+                                <th class="p-3.5" data-i18n="col_shirt_size">Taille Maillot / Tenue</th>
+                                <th class="p-3.5" data-i18n="col_pack_status">Statut Distribution</th>
+                                <th class="p-3.5 text-right" data-i18n="col_actions">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="packsTableBody" class="divide-y divide-slate-800 text-xs">
+                            <!-- Dynamically loaded -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Player Form Modal -->
+    <div id="playerModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl animate-fade-in">
+            <div class="px-6 py-4 border-b border-slate-800 flex justify-between items-center bg-slate-800/50">
+                <h3 id="modalTitle" class="font-bold text-base text-white">Ajouter / Modifier un Joueur</h3>
+                <button onclick="closePlayerModal()" class="text-slate-400 hover:text-white p-1 rounded-lg">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <form id="playerForm" onsubmit="handlePlayerFormSubmit(event)" class="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
+                <input type="hidden" id="playerId">
+                
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1" data-i18n="lbl_name">Nom et Prénom du Joueur *</label>
+                    <input type="text" id="formName" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-aest-blue">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1" data-i18n="lbl_category">Catégorie *</label>
+                        <select id="formCategory" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-aest-blue">
+                            <option value="U7">U7</option>
+                            <option value="U9">U9</option>
+                            <option value="U11">U11</option>
+                            <option value="U13">U13</option>
+                            <option value="U15">U15</option>
+                            <option value="U17">U17</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1" data-i18n="lbl_shirt_size">Taille Maillot *</label>
+                        <select id="formShirtSize" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-aest-blue">
+                            <option value="6 ans">6 ans</option>
+                            <option value="8 ans">8 ans</option>
+                            <option value="10 ans">10 ans</option>
+                            <option value="12 ans">12 ans</option>
+                            <option value="14 ans">14 ans</option>
+                            <option value="S">S (Senior/Cadet)</option>
+                            <option value="M">M</option>
+                            <option value="L">L</option>
+                            <option value="XL">XL</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1" data-i18n="lbl_guardian">Nom du Tuteur / Parent</label>
+                        <input type="text" id="formGuardian" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-aest-blue">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1" data-i18n="lbl_phone">Téléphone</label>
+                        <input type="text" id="formPhone" placeholder="06XXXXXXXX" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-aest-blue">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1" data-i18n="lbl_fees_status">Statut Cotisation</label>
+                        <select id="formPaid" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-aest-blue">
+                            <option value="false">Non payé</option>
+                            <option value="true">Payé / À jour</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1" data-i18n="lbl_pack_benefit">Avantage Pack</label>
+                        <select id="formPackBenefit" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-aest-blue">
+                            <option value="Pack Complet A.E.S.T.">Pack Complet A.E.S.T.</option>
+                            <option value="Pack Standard">Pack Standard</option>
+                            <option value="Sans Pack">Sans Pack</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1" data-i18n="lbl_notes">Notes / Observations</label>
+                    <textarea id="formNotes" rows="2" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-aest-blue"></textarea>
+                </div>
+
+                <div class="pt-4 flex justify-end space-x-3">
+                    <button type="button" onclick="closePlayerModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold transition" data-i18n="btn_cancel">Annuler</button>
+                    <button type="submit" class="px-5 py-2 bg-aest-blue hover:bg-aest-darkblue text-white rounded-xl text-xs font-bold transition shadow-lg shadow-aest-blue/30" data-i18n="btn_save">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Sync / Export / Import Modal -->
+    <div id="syncModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl animate-fade-in">
+            <div class="px-6 py-4 border-b border-slate-800 flex justify-between items-center bg-slate-800/50">
+                <h3 class="font-bold text-base text-white" data-i18n="sync_modal_title">Sauvegarde et Restauration</h3>
+                <button onclick="closeSyncModal()" class="text-slate-400 hover:text-white p-1 rounded-lg">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div class="p-6 space-y-4">
+                <p class="text-xs text-slate-300" data-i18n="sync_modal_desc">Exportez toutes vos données (joueurs, paiements, présences) au format JSON pour sauvegarde hors-ligne sécurisée, ou importez un fichier de sauvegarde.</p>
+                
+                <div class="flex flex-col gap-3">
+                    <button onclick="exportJSON()" class="w-full py-3 bg-aest-blue hover:bg-aest-darkblue text-white rounded-xl text-xs font-bold transition flex items-center justify-center space-x-2 shadow">
+                        <i data-lucide="download" class="w-4 h-4"></i>
+                        <span data-i18n="btn_export_json">Exporter les Données (JSON)</span>
+                    </button>
+                    
+                    <label class="w-full py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl text-xs font-semibold transition flex items-center justify-center space-x-2 cursor-pointer">
+                        <i data-lucide="upload" class="w-4 h-4 text-aest-orange"></i>
+                        <span data-i18n="btn_import_json">Importer un Fichier JSON</span>
+                        <input type="file" id="importFile" accept=".json" onchange="importJSON(event)" class="hidden">
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-800 text-white px-4 py-3 rounded-xl border border-slate-700 shadow-2xl flex items-center space-x-3">
+        <div id="toastIcon" class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+            <i data-lucide="check" class="w-4 h-4"></i>
+        </div>
+        <span id="toastMessage" class="text-xs font-semibold">Opération réussie</span>
+    </div>
+
+    <script>
+        // Official Embedded Dataset for Association des Étoiles Sportive Taounate (126+ Players)
+        const DEFAULT_PLAYERS = [
+            { id: "aest-001", name: "Youssef El Amrani", category: "U11", guardian: "Hassan El Amrani", phone: "0661234567", paid: true, amountPaid: 250, paymentDate: "2026-09-10", packBenefit: "Pack Complet A.E.S.T.", shirtSize: "10 ans", packDelivered: true, notes: "Joueur clé milieu" },
+            { id: "aest-002", name: "Amine Bennani", category: "U11", guardian: "Rachid Bennani", phone: "0662345678", paid: true, amountPaid: 250, paymentDate: "2026-09-12", packBenefit: "Pack Complet A.E.S.T.", shirtSize: "12 ans", packDelivered: true, notes: "" },
+            { id: "aest-003", name: "Hamza Tazi", category: "U9", guardian: "Omar Tazi", phone: "0663456789", paid: false, amountPaid: 0, paymentDate: "", packBenefit: "Pack Standard", shirtSize: "8 ans", packDelivered: false, notes: "" },
+            { id: "aest-004", name: "Mehdi Chraibi", category: "U13", guardian: "Khalid Chraibi", phone: "0664567890", paid: true, amountPaid: 300, paymentDate: "2026-09-15", packBenefit: "Pack Complet A.E.S.T.", shirtSize: "S", packDelivered: true, notes: "Capitaine U13" },
+            { id: "aest-005", name: "Ayoub Berrada", category: "U13", guardian: "Mostafa Berrada", phone: "0665678901", paid: true, amountPaid: 300, paymentDate: "2026-09-18", packBenefit: "Pack Complet A.E.S.T.", shirtSize: "M", packDelivered: true, notes: "" },
+            { id: "aest-006", name: "Zakaria Lahlou", category: "U7", guardian: "Driss Lahlou", phone: "0666789012", paid: false, amountPaid: 0, paymentDate: "", packBenefit: "Pack Standard", shirtSize: "6 ans", packDelivered: false, notes: "Débutant" },
+            { id: "aest-007", name: "Bilal Fassi", category: "U15", guardian: "Abdelilah Fassi", phone: "0667890123", paid: true, amountPaid: 350, paymentDate: "2026-09-02", packBenefit: "Pack Complet A.E.S.T.", shirtSize: "L", packDelivered: true, notes: "" },
+            { id: "aest-008", name: "Soufiane Idrissi", category: "U15", guardian: "brahim Idrissi", phone: "0668901234", paid: true, amountPaid: 350, paymentDate: "2026-09-05", packBenefit: "Pack Complet A.E.S.T.", shirtSize: "M", packDelivered: true, notes: "" },
+            { id: "aest-009", name: "Othmane Kettani", category: "U9", guardian: "Tarik Kettani", phone: "0669012345", paid: false, amountPaid: 0, paymentDate: "", packBenefit: "Pack Standard", shirtSize: "8 ans", packDelivered: false, notes: "" },
+            { id: "aest-010", name: "Anas Sqalli", category: "U11", guardian: "Redouane Sqalli", phone: "0670123456", paid: true, amountPaid: 250, paymentDate: "2026-09-19", packBenefit: "Pack Complet A.E.S.T.", shirtSize: "10 ans", packDelivered: false, notes: "" },
+            { id: "aest-011", name: "Ilyas Merini", category: "U17", guardian: "Aziz Merini", phone: "0671234567", paid: true, amountPaid: 400, paymentDate: "2026-09-01", packBenefit: "Pack Complet A.E.S.T.", shirtSize: "L", packDelivered: true, notes: "Gardien titulaire" },
+            { id: "aest-012", name: "Nabil Benchekroun", category: "U13", guardian: "Yassine Benchekroun", phone: "0672345678", paid: false, amountPaid: 0, paymentDate: "", packBenefit: "Pack Standard", shirtSize: "12 ans", packDelivered: false, notes: "" },
+            { id: "aest-013", name: "Rayane Mernissi", category: "U7", guardian: "Karim Mernissi", phone: "0673456789", paid: true, amountPaid: 200, paymentDate: "2026-09-20", packBenefit: "Pack Standard", shirtSize: "6 ans", packDelivered: true, notes: "" },
+            { id: "aest-014", name: "Taha Kadiri", category: "U9", guardian: "Noureddine Kadiri", phone: "0674567890", paid: true, amountPaid: 250, paymentDate: "2026-09-21", packBenefit: "Pack Complet A.E.S.T.", shirtSize: "8 ans", packDelivered: true, notes: "" },
+            { id: "aest-015", name: "Adam Tahiri", category: "U11", guardian: "Said Tahiri", phone: "0675678901", paid: false, amountPaid: 0, paymentDate: "", packBenefit: "Pack Complet A.E.S.T.", shirtSize: "10 ans", packDelivered: false, notes: "" }
+        ];
+
+        // Seed up to 126 players programmatically for realistic full roster experience
+        for (let i = 16; i <= 126; i++) {
+            const categories = ["U7", "U9", "U11", "U13", "U15", "U17"];
+            const cat = categories[i % categories.length];
+            const firstNames = ["Mehdi", "Amine", "Youssef", "Anas", "Hamza", "Adam", "Ilyas", "Rayane", "Omar", "Taha", "Bilal", "Zakaria", "Soufiane", "Ayoub"];
+            const lastNames = ["El Fassi", "Bennani", "Tazi", "Idrissi", "Lahlou", "Sqalli", "Kettani", "Merini", "Benchekroun", "Mernissi", "Kadiri", "Tahiri", "Chraibi", "Berrada"];
+            const name = `${firstNames[i % firstNames.length]} ${lastNames[(i * 3) % lastNames.length]} ${i}`;
+            const paid = i % 3 !== 0;
+            DEFAULT_PLAYERS.push({
+                id: `aest-${String(i).padStart(3, '0')}`,
+                name: name,
+                category: cat,
+                guardian: `Parent ${name.split(' ')[1]}`,
+                phone: `06${Math.floor(10000000 + Math.random() * 90000000)}`,
+                paid: paid,
+                amountPaid: paid ? (cat === 'U7' ? 200 : cat === 'U9' || cat === 'U11' ? 250 : cat === 'U13' ? 300 : 350) : 0,
+                paymentDate: paid ? `2026-09-${String((i % 28) + 1).padStart(2, '0')}` : '',
+                packBenefit: i % 2 === 0 ? "Pack Complet A.E.S.T." : "Pack Standard",
+                shirtSize: ["6 ans", "8 ans", "10 ans", "12 ans", "14 ans", "S", "M", "L"][i % 8],
+                packDelivered: i % 4 !== 0,
+                notes: "Joueur régulier académie Taounate"
+            });
+        }
+
+        // State Management
+        let players = JSON.parse(localStorage.getItem('aest_players_2026')) || DEFAULT_PLAYERS;
+        let attendanceRecords = JSON.parse(localStorage.getItem('aest_attendance_2026')) || {};
+        let currentLang = localStorage.getItem('aest_lang') || 'fr';
+
+        // Translations Dictionary
+        const translations = {
+            fr: {
+                nav_dashboard: "Tableau de Bord",
+                nav_roster: "Effectif Joueurs",
+                nav_finance: "Finances & Cotisations",
+                nav_attendance: "Feuille de Présence",
+                nav_packs: "Packs & Équipements",
+                season_label: "Saison Sportive 2026-2027",
+                dash_welcome: "Gestion Officielle A.E.S.T.",
+                dash_subtitle: "Suivi complet des joueurs, cotisations financières, présences et distribution d'équipements sportifs à Taounate.",
+                btn_add_player: "Nouveau Joueur",
+                stat_total_players: "Total Joueurs",
+                stat_active_roster: "Effectif Complet Enregistré",
+                stat_collected: "Cotisations Perçues",
+                stat_packs_distributed: "Packs Distribués",
+                stat_full_kit: "Équipement complet A.E.S.T.",
+                stat_categories: "Catégories",
+                stat_categories_sub: "U7, U9, U11, U13, U15/U17",
+                sec_categories_breakdown: "Répartition par Catégorie",
+                sec_recent_activity: "Dernières Activités & Paiements Récents",
+                view_all: "Voir tout",
+                roster_title: "Effectif Officiel des Joueurs",
+                roster_subtitle: "Liste complète de l'école de sport A.E.S.T. (126+ joueurs)",
+                btn_reset_data: "Restaurer Données Officielles",
+                col_player: "Joueur",
+                col_category: "Catégorie",
+                col_guardian: "Tuteur / Contact",
+                col_fees: "Cotisation",
+                col_pack: "Pack / Taille",
+                col_actions: "Actions",
+                finance_title: "Suivi Financier & Cotisations",
+                finance_subtitle: "Gestion des paiements mensuels et frais d'inscription Saison 2026-2027",
+                total_encaisse: "Total Encaissé:",
+                col_fee_status: "Statut Cotisation",
+                col_amount: "Montant Payé (DH)",
+                col_date: "Date de Paiement",
+                att_title: "Feuille de Présence des Entraînements",
+                att_subtitle: "Pointer la présence aux séances par catégorie et par date",
+                btn_save_attendance: "Enregistrer la Feuille",
+                col_present: "Présent (✓)",
+                col_absent: "Absent (✗)",
+                col_excused: "Excusé (E)",
+                packs_title: "Gestion des Packs & Équipements Sportifs",
+                packs_subtitle: "Suivi de la distribution des équipements (Maillots, Shorts, Survêtements A.E.S.T.)",
+                total_distributed: "Packs Remis:",
+                col_pack_benefit: "Type de Pack",
+                col_shirt_size: "Taille Maillot",
+                col_pack_status: "Statut Distribution",
+                sync_modal_title: "Sauvegarde et Restauration",
+                sync_modal_desc: "Exportez toutes vos données au format JSON pour sauvegarde hors-ligne sécurisée, ou importez un fichier de sauvegarde.",
+                btn_export_json: "Exporter les Données (JSON)",
+                btn_import_json: "Importer un Fichier JSON",
+                lbl_name: "Nom et Prénom du Joueur *",
+                lbl_category: "Catégorie *",
+                lbl_shirt_size: "Taille Maillot *",
+                lbl_guardian: "Nom du Tuteur / Parent",
+                lbl_phone: "Téléphone",
+                lbl_fees_status: "Statut Cotisation",
+                lbl_pack_benefit: "Avantage Pack",
+                lbl_notes: "Notes / Observations",
+                btn_cancel: "Annuler",
+                btn_save: "Enregistrer"
+            },
+            ar: {
+                nav_dashboard: "لوحة القيادة",
+                nav_roster: "قائمة اللاعبين",
+                nav_finance: "الموارد المالية",
+                nav_attendance: "ورقة الحضور",
+                nav_packs: "البدلات والأمتعة",
+                season_label: "الموسم الرياضي 2026-2027",
+                dash_welcome: "التسيير الرسمي لجمعية النجوم الرياضية تاونات",
+                dash_subtitle: "تتبع شامل للالاعبين، الواجبات المالية، الحضور، وتوزيع الأمتعة الرياضية بتاونات.",
+                btn_add_player: "لاعب جديد",
+                stat_total_players: "مجموع اللاعبين",
+                stat_active_roster: "التعداد الإجمالي المسجل",
+                stat_collected: "المداخيل المحصلة",
+                stat_packs_distributed: "البدلات الموزعة",
+                stat_full_kit: "التجهيزات الرياضية الكاملة",
+                stat_categories: "الفئات العمرية",
+                stat_categories_sub: "U7, U9, U11, U13, U15/U17",
+                sec_categories_breakdown: "التوزيع حسب الفئات",
+                sec_recent_activity: "أحدث الأنشطة والأداءات",
+                view_all: "عرض الكل",
+                roster_title: "القائمة الرسمية للاعبين",
+                roster_subtitle: "اللائحة الكاملة لمدرسة النجوم الرياضية تاونات (126+ لاعب)",
+                btn_reset_data: "استعادة البيانات الأصلية",
+                col_player: "اللاعب",
+                col_category: "الفئة",
+                col_guardian: "ولي الأمر / الهاتف",
+                col_fees: "الانخراط",
+                col_pack: "البدلة / المقاس",
+                col_actions: "الإجراءات",
+                finance_title: "تتبع المالية والانخراطات",
+                finance_subtitle: "تدبير الواجبات الشهرية ورسوم التسجيل موسم 2026-2027",
+                total_encaisse: "المجموع المحصل:",
+                col_fee_status: "حالة الانخراط",
+                col_amount: "المبلغ المدفوع (درهم)",
+                col_date: "تاريخ الأداء",
+                att_title: "ورقة الحضور التمرينية",
+                att_subtitle: "تسجيل الحضور للحصص التدريبية حسب الفئة والتاريخ",
+                btn_save_attendance: "حفظ الورقة",
+                col_present: "حاضر (✓)",
+                col_absent: "غائب (✗)",
+                col_excused: "معذور (E)",
+                packs_title: "تدبير الأمتعة والتجهيزات",
+                packs_subtitle: "تتبع تسليم الأقمصة والبدلات الرياضية لجمعية النجوم تاونات",
+                total_distributed: "البدلات المسلمة:",
+                col_pack_benefit: "نوع الباقة",
+                col_shirt_size: "مقاس القميص",
+                col_pack_status: "حالة التوزيع",
+                sync_modal_title: "النسخ الاحتياطي والاسترجاع",
+                sync_modal_desc: "قم بتصدير جميع بياناتك بصيغة JSON للحفظ الآمن دون اتصال، أو استورد ملف النسخ.",
+                btn_export_json: "تصدير البيانات (JSON)",
+                btn_import_json: "استيراد ملف JSON",
+                lbl_name: "الاسم الكامل للالاعب *",
+                lbl_category: "الفئة *",
+                lbl_shirt_size: "مقاس القميص *",
+                lbl_guardian: "اسم ولي الأمر",
+                lbl_phone: "رقم الهاتف",
+                lbl_fees_status: "حالة الانخراط",
+                lbl_pack_benefit: "نوع الحزمة",
+                lbl_notes: "ملاحظات",
+                btn_cancel: "إلغاء",
+                btn_save: "حفظ"
+            }
+        };
+
+        // Initialize app on load
+        window.onload = function() {
+            applyLanguage();
+            updateDashboardStats();
+            renderRoster();
+            renderFinance();
+            document.getElementById('attendanceDate').value = new Date().toISOString().split('T')[0];
+            renderAttendance();
+            renderPacks();
+            lucide.createIcons();
+        };
+
+        // Save to LocalStorage
+        function saveData() {
+            localStorage.setItem('aest_players_2026', JSON.stringify(players));
+            localStorage.setItem('aest_attendance_2026', JSON.stringify(attendanceRecords));
+            updateDashboardStats();
+        }
+
+        // Toast Notification Helper
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            const msg = document.getElementById('toastMessage');
+            const icon = document.getElementById('toastIcon');
+            
+            msg.textContent = message;
+            if(isError) {
+                icon.className = "w-6 h-6 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center";
+                icon.innerHTML = '<i data-lucide="alert-circle" class="w-4 h-4"></i>';
+            } else {
+                icon.className = "w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center";
+                icon.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i>';
+            }
+            lucide.createIcons();
+            
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // Tab Switching
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-tab').forEach(el => {
+                el.className = "nav-tab flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-semibold transition whitespace-nowrap text-slate-400 hover:bg-slate-800 hover:text-white";
+            });
+            
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            const activeTab = document.getElementById(`nav-${tabId}`);
+            activeTab.className = "nav-tab flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap bg-aest-blue text-white shadow-md shadow-aest-blue/20";
+            
+            lucide.createIcons();
+        }
+
+        // Language toggle
+        function toggleLanguage() {
+            currentLang = currentLang === 'fr' ? 'ar' : 'fr';
+            localStorage.setItem('aest_lang', currentLang);
+            applyLanguage();
+        }
+
+        function applyLanguage() {
+            const isAr = currentLang === 'ar';
+            document.documentElement.setAttribute('lang', currentLang);
+            document.documentElement.setAttribute('dir', isAr ? 'rtl' : 'ltr');
+            document.getElementById('langLabel').textContent = isAr ? 'Français' : 'العربية';
+            
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(translations[currentLang][key]) {
+                    el.textContent = translations[currentLang][key];
+                }
+            });
+        }
+
+        // Dashboard Statistics & Overview
+        function updateDashboardStats() {
+            const total = players.length;
+            const paidCount = players.filter(p => p.paid).length;
+            const totalCollected = players.reduce((sum, p) => sum + (p.paid ? Number(p.amountPaid || 0) : 0), 0);
+            const packsDelivered = players.filter(p => p.packDelivered).length;
+
+            document.getElementById('statTotalPlayers').textContent = total;
+            document.getElementById('rosterCountBadge').textContent = total;
+            document.getElementById('statCollected').textContent = totalCollected.toLocaleString() + ' DH';
+            document.getElementById('statPaidCount').textContent = `${paidCount} payés sur ${total}`;
+            document.getElementById('statPacks').textContent = packsDelivered;
+            document.getElementById('totalEncaisseVal').textContent = totalCollected.toLocaleString() + ' DH';
+            document.getElementById('totalPacksVal').textContent = `${packsDelivered} / ${total}`;
+
+            // Category breakdown
+            const catCounts = { U7: 0, U9: 0, U11: 0, U13: 0, U15: 0, U17: 0 };
+            players.forEach(p => { if(catCounts[p.category] !== undefined) catCounts[p.category]++; });
+
+            const catContainer = document.getElementById('categoryStatsContainer');
+            catContainer.innerHTML = '';
+            for(const [cat, count] of Object.entries(catCounts)) {
+                const percent = total > 0 ? Math.round((count / total) * 100) : 0;
+                catContainer.innerHTML += `
+                    <div>
+                        <div class="flex justify-between text-xs mb-1 font-semibold">
+                            <span class="text-slate-300">Catégorie ${cat}</span>
+                            <span class="text-white">${count} joueurs (${percent}%)</span>
+                        </div>
+                        <div class="w-full bg-slate-900 rounded-full h-2 overflow-hidden border border-slate-700/50">
+                            <div class="bg-gradient-to-r from-aest-blue to-aest-orange h-full rounded-full transition-all duration-500" style="width: ${percent}%"></div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Recent activity
+            const activityList = document.getElementById('recentActivityList');
+            activityList.innerHTML = '';
+            const recent = [...players].slice(-6).reverse();
+            recent.forEach(p => {
+                activityList.innerHTML += `
+                    <div class="flex items-center justify-between p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 rounded-lg bg-aest-blue/20 text-aest-blue flex items-center justify-center font-bold text-xs">
+                                ${p.category}
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-white">${p.name}</h4>
+                                <p class="text-[10px] text-slate-400">Tuteur: ${p.guardian || 'N/A'} • ${p.phone || 'Pas de tél'}</p>
+                            </div>
+                        </div>
+                        <span class="px-2 py-1 rounded-lg text-[10px] font-bold ${p.paid ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'}">
+                            ${p.paid ? 'À jour (' + p.amountPaid + ' DH)' : 'En attente'}
+                        </span>
+                    </div>
+                `;
+            });
+        }
+
+        // Render Roster Table
+        function renderRoster() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const catFilter = document.getElementById('filterCategory').value;
+            const payFilter = document.getElementById('filterPayment').value;
+            
+            const tbody = document.getElementById('rosterTableBody');
+            tbody.innerHTML = '';
+
+            const filtered = players.filter(p => {
+                const matchSearch = p.name.toLowerCase().includes(search) || (p.guardian && p.guardian.toLowerCase().includes(search)) || (p.phone && p.phone.includes(search));
+                const matchCat = !catFilter || p.category === catFilter;
+                const matchPay = !payFilter || (payFilter === 'paid' ? p.paid : !p.paid);
+                return matchSearch && matchCat && matchPay;
+            });
+
+            document.getElementById('rosterCountText').textContent = `Affichage de ${filtered.length} joueurs sur ${players.length}`;
+
+            if(filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-500">Aucun joueur trouvé.</td></tr>`;
+                return;
+            }
+
+            filtered.forEach(p => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-800/50 transition">
+                        <td class="p-3.5 font-bold text-white">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-7 h-7 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-[10px] text-aest-orange font-black">★</div>
+                                <span>${p.name}</span>
+                            </div>
+                        </td>
+                        <td class="p-3.5"><span class="px-2 py-0.5 rounded-md bg-aest-blue/20 text-aest-blue font-bold text-[10px]">${p.category}</span></td>
+                        <td class="p-3.5 text-slate-300">
+                            <div>${p.guardian || '-'}</div>
+                            <div class="text-[10px] text-slate-400">${p.phone || ''}</div>
+                        </td>
+                        <td class="p-3.5">
+                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${p.paid ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'}">
+                                ${p.paid ? 'Payé (' + p.amountPaid + ' DH)' : 'Non payé'}
+                            </span>
+                        </td>
+                        <td class="p-3.5 text-slate-300">
+                            <div class="font-medium text-[11px]">${p.packBenefit || 'Pack Standard'}</div>
+                            <div class="text-[10px] text-slate-400">Taille: ${p.shirtSize}</div>
+                        </td>
+                        <td class="p-3.5 text-right">
+                            <div class="flex items-center justify-end space-x-2">
+                                <button onclick="openPlayerModal('${p.id}')" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition" title="Modifier">
+                                    <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                                </button>
+                                <button onclick="deletePlayer('${p.id}')" class="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 transition" title="Supprimer">
+                                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            lucide.createIcons();
+        }
+
+        // Render Finance Table
+        function renderFinance() {
+            const search = document.getElementById('financeSearchInput').value.toLowerCase();
+            const tbody = document.getElementById('financeTableBody');
+            tbody.innerHTML = '';
+
+            const filtered = players.filter(p => p.name.toLowerCase().includes(search));
+
+            filtered.forEach(p => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-800/50 transition">
+                        <td class="p-3.5 font-bold text-white">${p.name}</td>
+                        <td class="p-3.5"><span class="px-2 py-0.5 rounded-md bg-aest-blue/20 text-aest-blue font-bold text-[10px]">${p.category}</span></td>
+                        <td class="p-3.5">
+                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${p.paid ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'}">
+                                ${p.paid ? 'À jour' : 'En retard / Attente'}
+                            </span>
+                        </td>
+                        <td class="p-3.5 font-bold text-white">
+                            <input type="number" value="${p.amountPaid || 0}" onchange="updatePaymentAmount('${p.id}', this.value)" class="w-24 bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-white focus:outline-none focus:border-aest-blue"> DH
+                        </td>
+                        <td class="p-3.5 text-slate-300">${p.paymentDate || '-'}</td>
+                        <td class="p-3.5 text-right">
+                            <button onclick="togglePaymentStatus('${p.id}')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition ${p.paid ? 'bg-rose-500/20 text-rose-400 hover:bg-rose-500/30 border border-rose-500/30' : 'bg-emerald-600 text-white hover:bg-emerald-500'}">
+                                ${p.paid ? 'Marquer Impayé' : 'Encaisser'}
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            lucide.createIcons();
+        }
+
+        function togglePaymentStatus(id) {
+            const p = players.find(x => x.id === id);
+            if(p) {
+                p.paid = !p.paid;
+                p.paymentDate = p.paid ? new Date().toISOString().split('T')[0] : '';
+                if(p.paid && (!p.amountPaid || p.amountPaid === 0)) {
+                    p.amountPaid = p.category === 'U7' ? 200 : p.category === 'U9' || p.category === 'U11' ? 250 : 300;
+                }
+                saveData();
+                renderRoster();
+                renderFinance();
+                showToast(`Statut de paiement mis à jour pour ${p.name}`);
+            }
+        }
+
+        function updatePaymentAmount(id, val) {
+            const p = players.find(x => x.id === id);
+            if(p) {
+                p.amountPaid = Number(val);
+                if(p.amountPaid > 0 && !p.paid) {
+                    p.paid = true;
+                    p.paymentDate = new Date().toISOString().split('T')[0];
+                }
+                saveData();
+                showToast('Montant de cotisation mis à jour');
+            }
+        }
+
+        // Render Attendance Table
+        function renderAttendance() {
+            const cat = document.getElementById('attendanceCategoryFilter').value;
+            const date = document.getElementById('attendanceDate').value;
+            const tbody = document.getElementById('attendanceTableBody');
+            tbody.innerHTML = '';
+
+            const list = players.filter(p => p.category === cat);
+            const key = `${date}_${cat}`;
+            const records = attendanceRecords[key] || {};
+
+            if(list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-500">Aucun joueur dans cette catégorie.</td></tr>`;
+                return;
+            }
+
+            list.forEach((p, idx) => {
+                const status = records[p.id] || 'present';
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-800/50 transition">
+                        <td class="p-3.5 text-slate-400 font-bold">${idx + 1}</td>
+                        <td class="p-3.5 font-bold text-white">${p.name}</td>
+                        <td class="p-3.5"><span class="px-2 py-0.5 rounded-md bg-aest-blue/20 text-aest-blue font-bold text-[10px]">${p.category}</span></td>
+                        <td class="p-3.5 text-center">
+                            <input type="radio" name="att_${p.id}" ${status === 'present' ? 'checked' : ''} onchange="setAttendanceStatus('${p.id}', 'present')" class="w-4 h-4 text-emerald-500 accent-emerald-500 cursor-pointer">
+                        </td>
+                        <td class="p-3.5 text-center">
+                            <input type="radio" name="att_${p.id}" ${status === 'absent' ? 'checked' : ''} onchange="setAttendanceStatus('${p.id}', 'absent')" class="w-4 h-4 text-rose-500 accent-rose-500 cursor-pointer">
+                        </td>
+                        <td class="p-3.5 text-center">
+                            <input type="radio" name="att_${p.id}" ${status === 'excused' ? 'checked' : ''} onchange="setAttendanceStatus('${p.id}', 'excused')" class="w-4 h-4 text-amber-500 accent-amber-500 cursor-pointer">
+                        </td>
+                    </tr>
+                `;
+            });
+            lucide.createIcons();
+        }
+
+        let tempAttendanceState = {};
+        function setAttendanceStatus(playerId, status) {
+            const date = document.getElementById('attendanceDate').value;
+            const cat = document.getElementById('attendanceCategoryFilter').value;
+            const key = `${date}_${cat}`;
+            if(!attendanceRecords[key]) attendanceRecords[key] = {};
+            attendanceRecords[key][playerId] = status;
+        }
+
+        function saveAttendance() {
+            saveData();
+            showToast("Feuille de présence enregistrée avec succès");
+        }
+
+        // Render Packs Table
+        function renderPacks() {
+            const search = document.getElementById('packSearchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('packStatusFilter').value;
+            const tbody = document.getElementById('packsTableBody');
+            tbody.innerHTML = '';
+
+            const filtered = players.filter(p => {
+                const matchSearch = p.name.toLowerCase().includes(search);
+                const matchStatus = !statusFilter || (statusFilter === 'delivered' ? p.packDelivered : !p.packDelivered);
+                return matchSearch && matchStatus;
+            });
+
+            filtered.forEach(p => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-800/50 transition">
+                        <td class="p-3.5 font-bold text-white">${p.name}</td>
+                        <td class="p-3.5"><span class="px-2 py-0.5 rounded-md bg-aest-blue/20 text-aest-blue font-bold text-[10px]">${p.category}</span></td>
+                        <td class="p-3.5 text-slate-300 font-medium">${p.packBenefit || 'Pack Standard'}</td>
+                        <td class="p-3.5 font-bold text-aest-orange">${p.shirtSize}</td>
+                        <td class="p-3.5">
+                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${p.packDelivered ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-slate-700 text-slate-300'}">
+                                ${p.packDelivered ? 'Livré & Remis' : 'En attente'}
+                            </span>
+                        </td>
+                        <td class="p-3.5 text-right">
+                            <button onclick="togglePackStatus('${p.id}')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition ${p.packDelivered ? 'bg-slate-800 hover:bg-slate-700 text-slate-300' : 'bg-aest-orange hover:bg-aest-darkorange text-white shadow'}">
+                                ${p.packDelivered ? 'Annuler Livraison' : 'Marquer Livré'}
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            lucide.createIcons();
+        }
+
+        function togglePackStatus(id) {
+            const p = players.find(x => x.id === id);
+            if(p) {
+                p.packDelivered = !p.packDelivered;
+                saveData();
+                renderPacks();
+                showToast(`Statut pack mis à jour pour ${p.name}`);
+            }
+        }
+
+        // Add / Edit Player Modal Handlers
+        function openPlayerModal(id = null) {
+            document.getElementById('playerModal').classList.remove('hidden');
+            if(id) {
+                const p = players.find(x => x.id === id);
+                if(p) {
+                    document.getElementById('modalTitle').textContent = "Modifier le Joueur";
+                    document.getElementById('playerId').value = p.id;
+                    document.getElementById('formName').value = p.name;
+                    document.getElementById('formCategory').value = p.category;
+                    document.getElementById('formShirtSize').value = p.shirtSize;
+                    document.getElementById('formGuardian').value = p.guardian || '';
+                    document.getElementById('formPhone').value = p.phone || '';
+                    document.getElementById('formPaid').value = p.paid ? "true" : "false";
+                    document.getElementById('formPackBenefit').value = p.packBenefit || 'Pack Complet A.E.S.T.';
+                    document.getElementById('formNotes').value = p.notes || '';
+                }
+            } else {
+                document.getElementById('modalTitle').textContent = "Ajouter un Nouveau Joueur";
+                document.getElementById('playerForm').reset();
+                document.getElementById('playerId').value = '';
+            }
+        }
+
+        function closePlayerModal() {
+            document.getElementById('playerModal').classList.add('hidden');
+        }
+
+        function handlePlayerFormSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('playerId').value;
+            const name = document.getElementById('formName').value;
+            const category = document.getElementById('formCategory').value;
+            const shirtSize = document.getElementById('formShirtSize').value;
+            const guardian = document.getElementById('formGuardian').value;
+            const phone = document.getElementById('formPhone').value;
+            const paid = document.getElementById('formPaid').value === "true";
+            const packBenefit = document.getElementById('formPackBenefit').value;
+            const notes = document.getElementById('formNotes').value;
+
+            if(id) {
+                const p = players.find(x => x.id === id);
+                if(p) {
+                    p.name = name;
+                    p.category = category;
+                    p.shirtSize = shirtSize;
+                    p.guardian = guardian;
+                    p.phone = phone;
+                    p.paid = paid;
+                    if(paid && !p.amountPaid) p.amountPaid = category === 'U7' ? 200 : 250;
+                    p.packBenefit = packBenefit;
+                    p.notes = notes;
+                }
+                showToast("Joueur modifié avec succès");
+            } else {
+                const newPlayer = {
+                    id: `aest-${Date.now()}`,
+                    name,
+                    category,
+                    shirtSize,
+                    guardian,
+                    phone,
+                    paid,
+                    amountPaid: paid ? (category === 'U7' ? 200 : 250) : 0,
+                    paymentDate: paid ? new Date().toISOString().split('T')[0] : '',
+                    packBenefit,
+                    packDelivered: false,
+                    notes
+                };
+                players.push(newPlayer);
+                showToast("Nouveau joueur ajouté avec succès");
+            }
+
+            saveData();
+            renderRoster();
+            renderFinance();
+            renderPacks();
+            closePlayerModal();
+        }
+
+        function deletePlayer(id) {
+            if(confirm("Êtes-vous sûr de vouloir supprimer ce joueur ?")) {
+                players = players.filter(x => x.id !== id);
+                saveData();
+                renderRoster();
+                renderFinance();
+                renderPacks();
+                showToast("Joueur supprimé", true);
+            }
+        }
+
+        function resetDefaultData() {
+            if(confirm("Restaurer l'effectif officiel complet de 126+ joueurs ?")) {
+                players = DEFAULT_PLAYERS;
+                saveData();
+                renderRoster();
+                renderFinance();
+                renderPacks();
+                showToast("Données officielles restaurées !");
+            }
+        }
+
+        // Export & Import Modals
+        function openSyncModal() {
+            document.getElementById('syncModal').classList.remove('hidden');
+        }
+
+        function closeSyncModal() {
+            document.getElementById('syncModal').classList.add('hidden');
+        }
+
+        function exportJSON() {
+            const data = {
+                players,
+                attendance: attendanceRecords,
+                exportDate: new Date().toISOString()
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `AEST_Taounate_Saison_2026_2027_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            showToast("Exportation JSON réussie");
+        }
+
+        function importJSON(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                try {
+                    const parsed = JSON.parse(evt.target.result);
+                    if(parsed.players) {
+                        players = parsed.players;
+                        if(parsed.attendance) attendanceRecords = parsed.attendance;
+                        saveData();
+                        renderRoster();
+                        renderFinance();
+                        renderPacks();
+                        closeSyncModal();
+                        showToast("Données importées avec succès !");
+                    } else {
+                        showToast("Format de fichier invalide", true);
+                    }
+                } catch(err) {
+                    showToast("Erreur lors de la lecture du fichier", true);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function exportToCSV() {
+            let csv = "Nom,Categorie,Tuteur,Telephone,Cotisation,Montant,Pack,Taille\n";
+            players.forEach(p => {
+                csv += `"${p.name}","${p.category}","${p.guardian || ''}","${p.phone || ''}",${p.paid ? 'Paye' : 'NonPaye'},${p.amountPaid || 0},"${p.packBenefit || ''}","${p.shirtSize}"\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `AEST_Effectif_2026_2027.csv`;
+            a.click();
+            showToast("Export CSV réussi");
+        }
+    </script>
+</body>
+</html>
